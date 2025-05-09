@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useRecipe } from '../context/RecipeContext';
+import { ArrowRight } from 'lucide-react';
 
 const RecipeChatbot: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -55,26 +56,28 @@ const RecipeChatbot: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      {/* Input form */}
+      {/* Input form - updated to match design */}
       <form
         onSubmit={handleSubmit}
         className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex"
       >
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="궁금한 점을 물어보세요"
-          className="flex-1 border border-gray-300 rounded-l-md py-2 px-4 focus:outline-none focus:ring-1 focus:ring-primary"
-          disabled={isLoading}
-        />
-        <button
-          type="submit"
-          className="bg-primary text-white px-4 rounded-r-md disabled:bg-gray-400"
-          disabled={isLoading || !inputValue.trim()}
-        >
-          전송
-        </button>
+        <div className="flex items-center w-full bg-gray-100 rounded-full px-4">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="메시지 입력..."
+            className="flex-1 bg-transparent py-2 border-none focus:outline-none focus:ring-0"
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            className="bg-primary text-white p-2 rounded-full disabled:bg-gray-400"
+            disabled={isLoading || !inputValue.trim()}
+          >
+            <ArrowRight size={18} />
+          </button>
+        </div>
       </form>
     </div>
   );
