@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from "sonner";
@@ -97,8 +98,8 @@ const MyPageForm = () => {
         throw new Error('비밀번호가 일치하지 않습니다.');
       }
       
-      // Delete account - passing the current password to the function
-      await deleteAccount(currentPassword);
+      // Delete account
+      await deleteAccount();
       
       // Show success toast
       toast("탈퇴되었습니다.");
