@@ -2,6 +2,7 @@
 import React from 'react';
 import { Item } from '../types/api';
 import { useInventory } from '../context/InventoryContext';
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface InventoryItemProps {
   item: Item;
@@ -55,10 +56,18 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
       onClick={handleClick}
     >
       {isSelectionMode && (
-        <div className={`absolute top-0 right-0 w-4 h-4 rounded-full border ${
-          isSelected ? 'bg-primary border-primary' : 'bg-white border-gray-400'
-        }`}>
-          {isSelected && <span className="text-white text-xs absolute top-0 left-0">✓</span>}
+        <div className="absolute top-0 right-0 z-10">
+          <Checkbox 
+            checked={isSelected}
+            className="border-2"
+            onCheckedChange={(checked) => {
+              if (checked) {
+                selectItem(item.item_id);
+              } else {
+                deselectItem(item.item_id);
+              }
+            }}
+          />
         </div>
       )}
       
