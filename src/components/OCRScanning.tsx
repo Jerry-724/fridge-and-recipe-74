@@ -25,9 +25,6 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
   const { addItem, categories } = useInventory();
   const { toast } = useToast();
   
-  // Detect if device is mobile
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  
   useEffect(() => {
     if (stage === 'scanning') {
       // Simulate OCR processing
@@ -91,12 +88,11 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
               <input
                 type="file"
                 accept="image/*"
-                capture={isMobile ? "environment" : undefined}
                 onChange={handleFileChange}
                 className="hidden"
               />
               <div className="bg-primary text-white py-3 rounded-md text-center cursor-pointer">
-                {isMobile ? '카메라 열기' : '갤러리에서 선택'}
+                갤러리에서 선택
               </div>
             </label>
           </div>

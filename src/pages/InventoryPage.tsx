@@ -12,7 +12,7 @@ const InventoryPage: React.FC = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
   const { isSelectionMode, setSelectionMode } = useInventory();
   
-  // Enable selection mode with long press (2 seconds)
+  // Enable selection mode with long press
   const handleLongPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     setSelectionMode(true);

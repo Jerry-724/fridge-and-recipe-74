@@ -1,15 +1,14 @@
 
 import React, { useRef } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { Refrigerator } from 'lucide-react'; // Replace dice with refrigerator
 
-// Mapping of major categories to emoji icons
+// Mock images for categories - in a real app these would be imported actual images
 const categoryImages = {
-  '식물성': '🌱',
-  '동물성': '🥩',
-  '가공식품': '🥫',
-  '조미료·양념': '🧂',
-  '기타': '🧁',
+  '동물성 식재료': '🥩',
+  '식물성 식재료': '🥬',
+  '가공식품, 저장식품, 반찬': '🥫',
+  '양념, 조미료': '🧂',
+  '기타 (디저트 등)': '🧁',
 };
 
 const CategoryBar: React.FC = () => {
@@ -17,13 +16,9 @@ const CategoryBar: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   
   // Get unique major categories
-  const majorCategories = [
-    '식물성',
-    '동물성',
-    '가공식품',
-    '조미료·양념',
-    '기타'
-  ];
+  const majorCategories = Array.from(
+    new Set(categories.map(category => category.category_major_name))
+  );
   
   // Handle category selection
   const handleCategoryClick = (categoryName: string) => {
@@ -59,11 +54,11 @@ const CategoryBar: React.FC = () => {
             onClick={() => handleCategoryClick(categoryName)}
           >
             <div 
-              className={`text-3xl mb-2 p-3 rounded-lg ${
+              className={`text-3xl mb-2 p-3 rounded-full ${
                 isSelected ? 'bg-primary bg-opacity-20' : 'bg-gray-100'
               }`}
             >
-              {categoryImages[categoryName as keyof typeof categoryImages] || <Refrigerator size={24} />}
+              {categoryImages[categoryName as keyof typeof categoryImages] || '📦'}
             </div>
             <span className="text-xs text-center w-full truncate">
               {categoryName}

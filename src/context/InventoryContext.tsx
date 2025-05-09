@@ -2,7 +2,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Item, Category } from '../types/api';
 import { useAuth } from './AuthContext';
-import { toast } from "sonner";
 
 interface InventoryContextType {
   items: Item[];
@@ -21,32 +20,20 @@ interface InventoryContextType {
   setSelectionMode: (mode: boolean) => void;
 }
 
-// Updated mock categories matching the new structure
+// Mock categories matching the specification
 const MOCK_CATEGORIES: Category[] = [
-  // 식물성
-  { category_id: 1, category_major_name: '식물성', category_sub_name: '곡류·서류' },
-  { category_id: 2, category_major_name: '식물성', category_sub_name: '두류·견과' },
-  { category_id: 3, category_major_name: '식물성', category_sub_name: '채소류' },
-  { category_id: 4, category_major_name: '식물성', category_sub_name: '버섯류' },
-  { category_id: 5, category_major_name: '식물성', category_sub_name: '과일류' },
-  { category_id: 6, category_major_name: '식물성', category_sub_name: '해조류' },
-  
-  // 동물성
-  { category_id: 7, category_major_name: '동물성', category_sub_name: '육류' },
-  { category_id: 8, category_major_name: '동물성', category_sub_name: '알류' },
-  { category_id: 9, category_major_name: '동물성', category_sub_name: '유제품' },
-  { category_id: 10, category_major_name: '동물성', category_sub_name: '어패류·해산물' },
-  
-  // 가공식품
-  { category_id: 11, category_major_name: '가공식품', category_sub_name: '가공식품' },
-  { category_id: 12, category_major_name: '가공식품', category_sub_name: '저장식품/반찬' },
-  
-  // 조미료·양념
-  { category_id: 13, category_major_name: '조미료·양념', category_sub_name: '기본 조미료' },
-  { category_id: 14, category_major_name: '조미료·양념', category_sub_name: '한식 양념' },
-  
-  // 기타
-  { category_id: 15, category_major_name: '기타', category_sub_name: '스낵/과자' },
+  { category_id: 1, category_major_name: '동물성 식재료', category_sub_name: '육류' },
+  { category_id: 2, category_major_name: '동물성 식재료', category_sub_name: '해산물' },
+  { category_id: 3, category_major_name: '동물성 식재료', category_sub_name: '유제품' },
+  { category_id: 4, category_major_name: '식물성 식재료', category_sub_name: '채소' },
+  { category_id: 5, category_major_name: '식물성 식재료', category_sub_name: '과일' },
+  { category_id: 6, category_major_name: '식물성 식재료', category_sub_name: '콩류' },
+  { category_id: 7, category_major_name: '가공식품, 저장식품, 반찬', category_sub_name: '간편식' },
+  { category_id: 8, category_major_name: '가공식품, 저장식품, 반찬', category_sub_name: '반찬' },
+  { category_id: 9, category_major_name: '양념, 조미료', category_sub_name: '양념장' },
+  { category_id: 10, category_major_name: '양념, 조미료', category_sub_name: '소스' },
+  { category_id: 11, category_major_name: '기타 (디저트 등)', category_sub_name: '디저트' },
+  { category_id: 12, category_major_name: '기타 (디저트 등)', category_sub_name: '음료' },
 ];
 
 // Mock food items
@@ -54,7 +41,7 @@ const MOCK_ITEMS: Item[] = [
   {
     item_id: 1,
     user_id: 1,
-    category_id: 7, // 육류
+    category_id: 1,
     item_name: '소고기',
     expiry_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
     created_at: new Date().toISOString(),
@@ -62,15 +49,15 @@ const MOCK_ITEMS: Item[] = [
   {
     item_id: 2,
     user_id: 1,
-    category_id: 3, // 채소류
+    category_id: 4,
     item_name: '당근',
-    expiry_date: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(), // 8 days from now
+    expiry_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
     created_at: new Date().toISOString(),
   },
   {
     item_id: 3,
     user_id: 1,
-    category_id: 5, // 과일류
+    category_id: 5,
     item_name: '사과',
     expiry_date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days from now
     created_at: new Date().toISOString(),
@@ -78,41 +65,9 @@ const MOCK_ITEMS: Item[] = [
   {
     item_id: 4,
     user_id: 1,
-    category_id: 9, // 유제품
+    category_id: 3,
     item_name: '우유',
     expiry_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day from now
-    created_at: new Date().toISOString(),
-  },
-  {
-    item_id: 5,
-    user_id: 1,
-    category_id: 5, // 과일류
-    item_name: '바나나',
-    expiry_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
-    created_at: new Date().toISOString(),
-  },
-  {
-    item_id: 6,
-    user_id: 1,
-    category_id: 5, // 과일류
-    item_name: '오렌지',
-    expiry_date: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 days from now
-    created_at: new Date().toISOString(),
-  },
-  {
-    item_id: 7,
-    user_id: 1,
-    category_id: 3, // 채소류
-    item_name: '브로콜리',
-    expiry_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
-    created_at: new Date().toISOString(),
-  },
-  {
-    item_id: 8,
-    user_id: 1,
-    category_id: 3, // 채소류
-    item_name: '양파',
-    expiry_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
     created_at: new Date().toISOString(),
   },
 ];
@@ -192,14 +147,8 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       };
       
       setItems(prevItems => [...prevItems, mockItem]);
-      
-      // Show notification
-      toast("식품이 추가되었습니다.");
     } catch (error) {
       console.error('Error adding item:', error);
-      toast("아이템 추가에 실패했습니다.", {
-        description: "다시 시도해주세요.",
-      });
       throw new Error('아이템 추가에 실패했습니다.');
     } finally {
       setIsLoading(false);
@@ -220,14 +169,8 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             : item
         )
       );
-      
-      // Show notification
-      toast("변경되었습니다.");
     } catch (error) {
       console.error('Error updating item:', error);
-      toast("아이템 업데이트에 실패했습니다.", {
-        description: "다시 시도해주세요.",
-      });
       throw new Error('아이템 업데이트에 실패했습니다.');
     } finally {
       setIsLoading(false);
@@ -248,14 +191,8 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       // Clear selection
       setSelectedItems([]);
       setSelectionMode(false);
-      
-      // Show notification
-      toast(`${itemIds.length}개 항목이 삭제되었습니다.`);
     } catch (error) {
       console.error('Error deleting items:', error);
-      toast("아이템 삭제에 실패했습니다.", {
-        description: "다시 시도해주세요.",
-      });
       throw new Error('아이템 삭제에 실패했습니다.');
     } finally {
       setIsLoading(false);
