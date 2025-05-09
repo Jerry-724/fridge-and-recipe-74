@@ -50,14 +50,12 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   
   return (
     <div
-      className={`relative flex flex-col items-center p-3 ${
-        isExpiringSoon ? 'bg-destructive bg-opacity-10' : 'bg-white'
-      } ${isSelected ? 'border-2 border-primary' : 'border border-gray-200'} 
-      rounded-lg shadow-sm`}
+      className={`relative flex flex-col items-center p-3
+      ${isExpiringSoon ? 'text-destructive' : 'text-gray-700'}`}
       onClick={handleClick}
     >
       {isSelectionMode && (
-        <div className={`absolute top-1 right-1 w-4 h-4 rounded-full border ${
+        <div className={`absolute top-0 right-0 w-4 h-4 rounded-full border ${
           isSelected ? 'bg-primary border-primary' : 'bg-white border-gray-400'
         }`}>
           {isSelected && <span className="text-white text-xs absolute top-0 left-0">✓</span>}
