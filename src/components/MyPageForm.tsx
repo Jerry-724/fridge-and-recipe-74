@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from "sonner";
 
-// Import our new components
+// Import our enhanced components
 import ViewMode from './mypage/ViewMode';
 import EditNickname from './mypage/EditNickname';
 import EditPassword from './mypage/EditPassword';
@@ -38,10 +38,10 @@ const MyPageForm = () => {
       toast("변경되었습니다.");
       
       resetForm();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast("변경에 실패했습니다.", {
-        description: "비밀번호를 확인해주세요.",
+        description: error.message || "비밀번호를 확인해주세요.",
       });
     } finally {
       setLoading(false);
@@ -99,10 +99,10 @@ const MyPageForm = () => {
       toast("탈퇴되었습니다.");
       
       resetForm();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast("탈퇴에 실패했습니다.", {
-        description: "비밀번호를 확인해주세요.",
+        description: error.message || "비밀번호를 확인해주세요.",
       });
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ const MyPageForm = () => {
     }
   };
 
-  // Render form based on mode using new components
+  // Render form based on mode using enhanced components
   const renderForm = () => {
     switch (mode) {
       case 'editNickname':
