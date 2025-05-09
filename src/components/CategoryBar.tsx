@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { Refrigerator } from 'lucide-react'; // Replace dice with refrigerator
+import { Refrigerator } from 'lucide-react'; // Import Refrigerator icon
 
 // Mapping of major categories to emoji icons
 const categoryImages = {

@@ -56,10 +56,10 @@ const RecipeChatbot: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      {/* Input form - updated to match design */}
+      {/* Input form - updated design with button outside */}
       <form
         onSubmit={handleSubmit}
-        className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex"
+        className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center gap-2"
       >
         <div className="flex items-center w-full bg-gray-100 rounded-full px-4">
           <input
@@ -70,14 +70,14 @@ const RecipeChatbot: React.FC = () => {
             className="flex-1 bg-transparent py-2 border-none focus:outline-none focus:ring-0"
             disabled={isLoading}
           />
-          <button
-            type="submit"
-            className="bg-primary text-white p-2 rounded-full disabled:bg-gray-400"
-            disabled={isLoading || !inputValue.trim()}
-          >
-            <ArrowRight size={18} />
-          </button>
         </div>
+        <button
+          type="submit"
+          className="bg-[#9b87f5] text-white p-3 rounded-full disabled:bg-gray-400"
+          disabled={isLoading || !inputValue.trim()}
+        >
+          <ArrowRight size={18} />
+        </button>
       </form>
     </div>
   );
