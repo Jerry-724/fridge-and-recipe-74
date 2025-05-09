@@ -36,7 +36,12 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    await onDelete(values.password);
+    try {
+      await onDelete(values.password);
+    } catch (error) {
+      // Form validation errors are automatically handled by React Hook Form
+      console.error("Error during account deletion:", error);
+    }
   };
 
   return (

@@ -36,7 +36,13 @@ const EditNickname: React.FC<EditNicknameProps> = ({ onCancel, onSubmit, loading
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    await onSubmit(values.currentPassword, values.newNickname);
+    try {
+      // Ensure we're correctly passing both parameters to the onSubmit function
+      await onSubmit(values.currentPassword, values.newNickname);
+    } catch (error) {
+      // Form validation errors are automatically handled by React Hook Form
+      console.error("Error during nickname update:", error);
+    }
   };
 
   return (

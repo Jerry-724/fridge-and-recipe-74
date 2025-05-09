@@ -41,7 +41,17 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onCancel, onSubmit, loading
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    await onSubmit(values.currentPassword, values.newPassword, values.confirmPassword);
+    try {
+      // Ensure we pass all three parameters to the onSubmit function
+      await onSubmit(
+        values.currentPassword,
+        values.newPassword,
+        values.confirmPassword
+      );
+    } catch (error) {
+      // Form validation errors are automatically handled by React Hook Form
+      console.error("Error during password update:", error);
+    }
   };
 
   return (
