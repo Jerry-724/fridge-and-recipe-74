@@ -24,8 +24,8 @@ const RecipeChatbot: React.FC = () => {
   
   return (
     <div className="flex flex-col h-full pb-16">
-      {/* Chat messages - updated to hide scrollbar by default with overflow-auto instead of overflow-y-auto */}
-      <div className="flex-1 overflow-auto p-4 space-y-4 scrollbar-hide">
+      {/* Chat messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -56,9 +56,10 @@ const RecipeChatbot: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
       
+      {/* Input form - updated to match design */}
       <form
         onSubmit={handleSubmit}
-        className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center gap-2"
+        className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex"
       >
         <div className="flex items-center w-full bg-gray-100 rounded-full px-4">
           <input
@@ -69,14 +70,14 @@ const RecipeChatbot: React.FC = () => {
             className="flex-1 bg-transparent py-2 border-none focus:outline-none focus:ring-0"
             disabled={isLoading}
           />
+          <button
+            type="submit"
+            className="bg-primary text-white p-2 rounded-full disabled:bg-gray-400"
+            disabled={isLoading || !inputValue.trim()}
+          >
+            <ArrowRight size={18} />
+          </button>
         </div>
-        <button
-          type="submit"
-          className="bg-[#9b87f5] text-white p-3 rounded-full disabled:bg-gray-400"
-          disabled={isLoading || !inputValue.trim()}
-        >
-          <ArrowRight size={18} />
-        </button>
       </form>
     </div>
   );

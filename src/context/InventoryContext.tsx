@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Item, Category } from '../types/api';
 import { useAuth } from './AuthContext';
@@ -34,7 +35,7 @@ const MOCK_CATEGORIES: Category[] = [
   { category_id: 7, category_major_name: '동물성', category_sub_name: '육류' },
   { category_id: 8, category_major_name: '동물성', category_sub_name: '알류' },
   { category_id: 9, category_major_name: '동물성', category_sub_name: '유제품' },
-  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' }, // Changed from '어패류·해산물' to '해산물' for consistency
+  { category_id: 10, category_major_name: '동물성', category_sub_name: '어패류·해산물' },
   
   // 가공식품
   { category_id: 11, category_major_name: '가공식품', category_sub_name: '가공식품' },
