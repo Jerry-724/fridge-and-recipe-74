@@ -12,7 +12,7 @@ const InventoryPage: React.FC = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
   const { isSelectionMode, setSelectionMode } = useInventory();
   
-  // Enable selection mode with long press (1.5 seconds)
+  // Enable selection mode with long press (2 seconds)
   const handleLongPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     setSelectionMode(true);
@@ -32,11 +32,11 @@ const InventoryPage: React.FC = () => {
       <div 
         className="pb-20"
         onTouchStart={(e) => {
-          let timer = setTimeout(() => handleLongPress(e), 1500);
+          let timer = setTimeout(() => handleLongPress(e), 2000);
           e.currentTarget.addEventListener('touchend', () => clearTimeout(timer), { once: true });
         }}
         onMouseDown={(e) => {
-          let timer = setTimeout(() => handleLongPress(e), 1500);
+          let timer = setTimeout(() => handleLongPress(e), 2000);
           e.currentTarget.addEventListener('mouseup', () => clearTimeout(timer), { once: true });
         }}
       >
