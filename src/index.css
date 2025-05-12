@@ -1,85 +1,98 @@
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-  color-scheme: light;
-  color: rgba(34, 34, 34, 1);
-  background-color: #ffffff;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-a {
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #747bff;
-}
+    --primary: 142 36% 58%;
+    --primary-foreground: 0 0% 100%;
 
-body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #f6f6f7;
-  overflow: hidden; /* Hide overflow on body */
-}
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 20%;
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+    --accent: 142 36% 58%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
 
-/* Custom classes */
-.input-field {
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 0.375rem;
-  padding: 0.5rem;
-}
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142 36% 58%;
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
+    --radius: 0.5rem;
 
-.animate-slide-down {
-  animation: slideDown 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes slideDown {
-  0% { 
-    opacity: 0;
-    transform: translateY(-20px); 
+    font-family: 'Noto Sans KR', sans-serif;
   }
-  100% { 
-    opacity: 1;
-    transform: translateY(0); 
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-medium;
+  }
+
+  /* Custom scrollbar for category bar */
+  .category-scroll::-webkit-scrollbar {
+    display: none;  /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+  
+  .category-scroll {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Add smooth transitions */
+  .page-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Input field styling */
+  .input-field {
+    @apply w-full border border-gray-300 rounded-md px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+  }
+
+  /* Button styling */
+  .btn-primary {
+    @apply bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-gray-800 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors;
+  }
+  
+  /* Add slide animations */
+  .slide-in {
+    animation: slideIn 0.3s forwards;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 }

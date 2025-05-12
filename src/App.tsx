@@ -1,4 +1,3 @@
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,8 +23,8 @@ const App = () => {
         <AuthProvider>
           <InventoryProvider>
             <RecipeProvider>
-              {/* Only show one toast at the top */}
-              <Sonner position="top-center" closeButton={false} duration={1000} />
+              {/* Remove duplicate Toaster component, keep only one */}
+              <Sonner />
               <BrowserRouter>
                 <Routes>
                   {/* Public routes */}

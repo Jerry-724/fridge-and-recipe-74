@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { Refrigerator } from 'lucide-react';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -35,16 +34,15 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         className={`text-4xl font-bold text-primary mb-8 transition-all duration-1000 ${
           animationStage >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
-        style={{ color: '#70B873' }}
       >
         뭐먹을냉?
       </h1>
       <div 
-        className={`text-8xl transition-all duration-1000 ${
+        className={`text-6xl transition-all duration-1000 ${
           animationStage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
       >
-        <Refrigerator size={96} className="text-primary" />
+        🧊
       </div>
     </div>
   );
