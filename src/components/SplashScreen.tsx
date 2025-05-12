@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { Refrigerator } from 'lucide-react';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -43,7 +42,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           animationStage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
       >
-        <Refrigerator size={64} className="text-primary" />
+        🧊
       </div>
     </div>
   );
