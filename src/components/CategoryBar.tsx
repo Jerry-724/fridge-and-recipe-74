@@ -5,7 +5,6 @@ import {
   Beef, 
   Carrot, 
   Archive, 
-  Salt, 
   Cookie 
 } from 'lucide-react';
 
@@ -27,7 +26,7 @@ const CategoryBar: React.FC = () => {
     '동물성': Beef,
     '식물성': Carrot,
     '가공식품': Archive,
-    '조미료·양념': Salt,
+    '조미료·양념': Beef, // Using Beef icon as a replacement for Salt
     '기타': Cookie,
   };
   
