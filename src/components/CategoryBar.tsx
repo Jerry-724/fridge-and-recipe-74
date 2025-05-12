@@ -1,16 +1,13 @@
 
 import React, { useRef } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { Refrigerator } from 'lucide-react'; // Import Refrigerator icon
-
-// Mapping of major categories to emoji icons
-const categoryImages = {
-  '식물성': '🌱',
-  '동물성': '🥩',
-  '가공식품': '🥫',
-  '조미료·양념': '🧂',
-  '기타': '🧁',
-};
+import { 
+  Meat, 
+  Carrot, 
+  Archive, 
+  Spices, 
+  Cookie 
+} from 'lucide-react';
 
 const CategoryBar: React.FC = () => {
   const { categories, selectedCategoryId, setSelectedCategoryId } = useInventory();
@@ -24,6 +21,15 @@ const CategoryBar: React.FC = () => {
     '조미료·양념',
     '기타'
   ];
+  
+  // Map categories to vector icons
+  const categoryIcons = {
+    '동물성': Meat,
+    '식물성': Carrot,
+    '가공식품': Archive,
+    '조미료·양념': Spices,
+    '기타': Cookie,
+  };
   
   // Handle category selection
   const handleCategoryClick = (categoryName: string) => {
@@ -44,28 +50,26 @@ const CategoryBar: React.FC = () => {
   return (
     <div 
       ref={scrollRef}
-      className="category-scroll flex overflow-x-auto py-4 px-2 bg-white sticky top-0 z-10"
+      className="flex overflow-x-auto py-4 px-2 bg-white sticky top-0 z-10 scrollbar-none"
     >
       {majorCategories.map((categoryName, index) => {
         const isSelected = selectedCategoryId !== null && 
           categories.find(c => c.category_id === selectedCategoryId)?.category_major_name === categoryName;
         
+        const IconComponent = categoryIcons[categoryName as keyof typeof categoryIcons];
+        
         return (
           <div 
             key={index}
             className={`flex flex-col items-center min-w-[80px] mx-2 ${
-              isSelected ? 'text-primary' : 'text-gray-700'
+              isSelected ? 'text-[#70B873]' : 'text-gray-700'
             }`}
             onClick={() => handleCategoryClick(categoryName)}
           >
-            <div 
-              className={`text-3xl mb-2 p-3 rounded-lg ${
-                isSelected ? 'bg-primary bg-opacity-20' : 'bg-gray-100'
-              }`}
-            >
-              {categoryImages[categoryName as keyof typeof categoryImages] || <Refrigerator size={24} />}
+            <div className="mb-1">
+              <IconComponent size={32} color={isSelected ? "#70B873" : "#666666"} />
             </div>
-            <span className="text-xs text-center w-full truncate">
+            <span className="text-xs text-center w-full truncate font-bold">
               {categoryName}
             </span>
           </div>

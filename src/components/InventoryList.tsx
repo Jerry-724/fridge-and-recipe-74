@@ -17,7 +17,7 @@ const subcategories = {
     '육류', 
     '알류',
     '유제품',
-    '해산물'  // Changed from '어패류·해산물' to '해산물'
+    '해산물'
   ],
   '가공식품': [
     '가공식품',
@@ -75,7 +75,7 @@ const InventoryList: React.FC = () => {
     
     // Just render all items without sub-grouping
     return (
-      <div className="pb-20">
+      <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none">
         {allItems.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>아직 등록된 식품이 없습니다.</p>
@@ -138,7 +138,7 @@ const InventoryList: React.FC = () => {
     });
     
     return (
-      <div className="pb-20">
+      <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none">
         {Object.keys(groupedItems).length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>아직 등록된 식품이 없습니다.</p>

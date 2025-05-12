@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface SignupFormProps {
   onToggleLogin: () => void;
@@ -13,7 +13,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const { signup, isLoading } = useAuth();
-  const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,8 +38,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
     try {
       await signup(login_id, password, username);
       toast({
-        title: '회원가입 성공',
-        description: '이제 로그인을 진행해주세요.',
+        title: '회원가입 되었습니다',
+        duration: 1000,
       });
       onToggleLogin();
     } catch (error) {
@@ -54,9 +53,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   
   return (
     <div className="w-full max-w-md px-6 animate-slide-down">
-      <h2 className="text-2xl font-medium text-center text-gray-800 mb-8">뭐먹을냉?</h2>
+      <h2 className="text-2xl font-bold text-center text-[#70B873] mb-6">뭐먹을냉?</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <input
             type="text"
@@ -103,14 +102,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
         
         <button
           type="submit"
-          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors"
+          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors mt-2"
           disabled={isLoading}
         >
           {isLoading ? '회원가입 중...' : '회원가입'}
         </button>
       </form>
       
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <button
           onClick={onToggleLogin}
           className="text-primary hover:text-primary-dark transition-colors"

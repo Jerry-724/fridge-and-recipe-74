@@ -40,9 +40,10 @@ const EditNickname: React.FC<EditNicknameProps> = ({ onCancel, onSubmit, loading
   };
 
   return (
-    <FormContainer title="닉네임 변경">
+    <FormContainer>
+      <h2 className="text-lg font-medium mb-4">닉네임 변경</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
           <FormField
             control={form.control}
             name="currentPassword"
@@ -71,7 +72,7 @@ const EditNickname: React.FC<EditNicknameProps> = ({ onCancel, onSubmit, loading
             )}
           />
           
-          <div className="flex space-x-2 pt-4">
+          <div className="flex space-x-2 pt-3">
             <Button
               type="button"
               onClick={onCancel}

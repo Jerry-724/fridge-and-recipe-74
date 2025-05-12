@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface DeleteAccountProps {
   onCancel: () => void;
@@ -40,16 +39,15 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
   };
 
   return (
-    <FormContainer title="계정 탈퇴">
-      <Alert variant="destructive" className="mb-4">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.
-        </AlertDescription>
-      </Alert>
+    <FormContainer>
+      <div className="mb-5 text-center text-destructive">
+        <AlertCircle className="h-10 w-10 mx-auto mb-2" />
+        <p className="text-lg font-medium">정말 탈퇴하시겠습니까?</p>
+        <p>이 작업은 되돌릴 수 없습니다.</p>
+      </div>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
           <FormField
             control={form.control}
             name="password"
@@ -64,7 +62,7 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
             )}
           />
           
-          <div className="flex space-x-2 pt-4">
+          <div className="flex space-x-2 pt-3">
             <Button
               type="button"
               onClick={onCancel}

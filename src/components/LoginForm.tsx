@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface LoginFormProps {
   onToggleSignup: () => void;
@@ -11,7 +11,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
   const [login_id, setLoginId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { login, isLoading } = useAuth();
-  const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +26,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
     
     try {
       await login(login_id, password);
+      toast({
+        title: '로그인에 성공했습니다',
+        duration: 1000,
+      });
     } catch (error) {
       toast({
         title: '로그인 실패',
@@ -38,9 +41,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
   
   return (
     <div className="w-full max-w-md px-6 animate-slide-down">
-      <h2 className="text-2xl font-medium text-center text-gray-800 mb-8">뭐먹을냉?</h2>
+      <h2 className="text-2xl font-bold text-center text-[#70B873] mb-6">뭐먹을냉?</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <input
             type="text"
@@ -65,14 +68,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
         
         <button
           type="submit"
-          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors"
+          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors mt-2"
           disabled={isLoading}
         >
           {isLoading ? '로그인 중...' : '로그인'}
         </button>
       </form>
       
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <button
           onClick={onToggleSignup}
           className="text-primary hover:text-primary-dark transition-colors"

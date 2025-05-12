@@ -26,11 +26,11 @@ const InventoryPage: React.FC = () => {
   }, [setSelectionMode]);
   
   return (
-    <div className="pb-16">
+    <div className="h-full flex flex-col">
       <CategoryBar />
       
       <div 
-        className="pb-20"
+        className="flex-1"
         onTouchStart={(e) => {
           let timer = setTimeout(() => handleLongPress(e), 1500);
           e.currentTarget.addEventListener('touchend', () => clearTimeout(timer), { once: true });

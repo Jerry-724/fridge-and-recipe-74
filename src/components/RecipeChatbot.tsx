@@ -23,9 +23,9 @@ const RecipeChatbot: React.FC = () => {
   }, [messages]);
   
   return (
-    <div className="flex flex-col h-full pb-16">
+    <div className="flex flex-col h-[calc(100vh-80px)]">
       {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-none">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -59,7 +59,7 @@ const RecipeChatbot: React.FC = () => {
       {/* Input form - updated design with button outside */}
       <form
         onSubmit={handleSubmit}
-        className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center gap-2"
+        className="bg-white border-t border-gray-200 p-3 flex items-center gap-2"
       >
         <div className="flex items-center w-full bg-gray-100 rounded-full px-4">
           <input

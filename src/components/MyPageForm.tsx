@@ -2,9 +2,16 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { 
+  Bell, 
+  User, 
+  Lock, 
+  LogOut, 
+  Trash2 
+} from 'lucide-react';
 
-// Import our enhanced components
-import ViewMode from './mypage/ViewMode';
+// Import enhanced components
 import EditNickname from './mypage/EditNickname';
 import EditPassword from './mypage/EditPassword';
 import DeleteAccount from './mypage/DeleteAccount';
@@ -14,6 +21,7 @@ type FormMode = 'view' | 'editNickname' | 'editPassword' | 'deleteAccount';
 const MyPageForm = () => {
   const [mode, setMode] = useState<FormMode>('view');
   const [loading, setLoading] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user, updateUser, deleteAccount, logout } = useAuth();
 
   const resetForm = () => {
@@ -35,7 +43,7 @@ const MyPageForm = () => {
       await updateUser({ username: newNickname });
       
       // Show success toast
-      toast("변경되었습니다.");
+      toast("변경되었습니다.", { duration: 1000 });
       
       resetForm();
     } catch (error: any) {
@@ -68,7 +76,7 @@ const MyPageForm = () => {
       await updateUser({ password: newPassword });
       
       // Show success toast
-      toast("변경되었습니다.");
+      toast("변경되었습니다.", { duration: 1000 });
       
       resetForm();
     } catch (error: any) {
@@ -96,7 +104,7 @@ const MyPageForm = () => {
       await deleteAccount(password);
       
       // Show success toast
-      toast("탈퇴되었습니다.");
+      toast("탈퇴되었습니다.", { duration: 1000 });
       
       resetForm();
     } catch (error: any) {
@@ -112,11 +120,91 @@ const MyPageForm = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      toast("로그아웃되었습니다.");
+      toast("로그아웃되었습니다.", { duration: 1000 });
     } catch (error) {
       console.error(error);
       toast("로그아웃에 실패했습니다.");
     }
+  };
+
+  // Render MyPage view mode
+  const renderViewMode = () => {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-xl font-bold mb-4">내 정보</h2>
+        </div>
+
+        {/* Notification Settings */}
+        <div className="p-4 bg-white rounded-lg border border-gray-200">
+          <h3 className="text-lg font-medium mb-4">알림 설정</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Bell size={18} className="text-gray-500" />
+              <span>푸시 알림</span>
+            </div>
+            <Switch 
+              checked={notificationsEnabled}
+              onCheckedChange={setNotificationsEnabled}
+            />
+          </div>
+        </div>
+
+        {/* Account Information */}
+        <div className="p-4 bg-white rounded-lg border border-gray-200">
+          <h3 className="text-lg font-medium mb-4">계정 정보</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <User size={18} className="text-gray-500" />
+                <span>닉네임</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-600 mr-2">{user?.username || '-'}</span>
+                <button 
+                  onClick={() => setMode('editNickname')}
+                  className="text-sm text-primary"
+                >
+                  변경
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <Lock size={18} className="text-gray-500" />
+                <span>비밀번호</span>
+              </div>
+              <button 
+                onClick={() => setMode('editPassword')}
+                className="text-sm text-primary"
+              >
+                변경
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-3 pt-4">
+          <button
+            onClick={() => setMode('deleteAccount')}
+            className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 text-white bg-red-500 rounded-md hover:bg-red-600"
+          >
+            <Trash2 size={18} />
+            <span>회원 탈퇴</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            <LogOut size={18} />
+            <span>로그아웃</span>
+          </button>
+        </div>
+      </div>
+    );
   };
 
   // Render form based on mode using enhanced components
@@ -150,13 +238,7 @@ const MyPageForm = () => {
         );
         
       default:
-        return (
-          <ViewMode 
-            user={user} 
-            onModeChange={setMode} 
-            onLogout={handleLogout} 
-          />
-        );
+        return renderViewMode();
     }
   };
 

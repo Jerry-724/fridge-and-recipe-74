@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -14,7 +15,14 @@ import MyPage from "./pages/MyPage";
 import NotFound from "./pages/NotFound";
 import AuthLayout from "./components/AuthLayout";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 const App = () => {
   return (
@@ -23,8 +31,7 @@ const App = () => {
         <AuthProvider>
           <InventoryProvider>
             <RecipeProvider>
-              {/* Remove duplicate Toaster component, keep only one */}
-              <Sonner />
+              <Sonner position="top-center" closeButton toastOptions={{ duration: 1000 }} />
               <BrowserRouter>
                 <Routes>
                   {/* Public routes */}
