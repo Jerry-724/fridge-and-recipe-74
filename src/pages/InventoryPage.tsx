@@ -10,7 +10,13 @@ import DeleteConfirmation from '../components/DeleteConfirmation';
 const InventoryPage: React.FC = () => {
   const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
-  const { isSelectionMode, setSelectionMode } = useInventory();
+  const { isSelectionMode, setSelectionMode, clearSelectedItems } = useInventory();
+  
+  const handleCloseDeleteConfirmation = () => {
+    setShowDeleteConfirmation(false);
+    setSelectionMode(false);
+    clearSelectedItems();
+  };
   
   return (
     <div className="h-full flex flex-col">
@@ -30,10 +36,7 @@ const InventoryPage: React.FC = () => {
       )}
       
       {showDeleteConfirmation && (
-        <DeleteConfirmation onClose={() => {
-          setShowDeleteConfirmation(false);
-          setSelectionMode(false);
-        }} />
+        <DeleteConfirmation onClose={handleCloseDeleteConfirmation} />
       )}
     </div>
   );

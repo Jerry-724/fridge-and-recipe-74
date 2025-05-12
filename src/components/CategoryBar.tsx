@@ -5,7 +5,8 @@ import {
   Beef, 
   Carrot, 
   Archive, 
-  Cookie 
+  Cookie,
+  Utensils
 } from 'lucide-react';
 
 const CategoryBar: React.FC = () => {
@@ -26,7 +27,7 @@ const CategoryBar: React.FC = () => {
     '동물성': Beef,
     '식물성': Carrot,
     '가공식품': Archive,
-    '조미료·양념': Beef, // Using Beef icon as a replacement for Salt
+    '조미료·양념': Utensils, // Changed from Beef to Utensils for seasoning
     '기타': Cookie,
   };
   
@@ -60,15 +61,19 @@ const CategoryBar: React.FC = () => {
         return (
           <div 
             key={index}
-            className={`flex flex-col items-center min-w-[80px] mx-2 ${
-              isSelected ? 'text-[#70B873]' : 'text-gray-700'
+            className={`flex flex-col items-center min-w-[70px] mx-1 ${
+              isSelected ? 'text-white' : 'text-[#70B873]'
             }`}
             onClick={() => handleCategoryClick(categoryName)}
           >
-            <div className="mb-1">
-              <IconComponent size={32} color={isSelected ? "#70B873" : "#666666"} />
+            <div className={`mb-1 p-2 rounded-lg ${
+              isSelected ? 'bg-[#70B873]' : 'bg-transparent'
+            }`}>
+              <IconComponent size={36} color={isSelected ? "#FFFFFF" : "#70B873"} />
             </div>
-            <span className="text-xs text-center w-full truncate font-bold">
+            <span className={`text-xs text-center w-full truncate font-bold ${
+              isSelected ? 'text-[#70B873]' : 'text-gray-700'
+            }`}>
               {categoryName}
             </span>
           </div>

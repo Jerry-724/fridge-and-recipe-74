@@ -75,7 +75,7 @@ const InventoryList: React.FC = () => {
     
     // Just render all items without sub-grouping
     return (
-      <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none">
+      <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none touch-pan-y">
         {allItems.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>아직 등록된 식품이 없습니다.</p>
@@ -138,7 +138,7 @@ const InventoryList: React.FC = () => {
     });
     
     return (
-      <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none">
+      <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none touch-pan-y">
         {Object.keys(groupedItems).length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>아직 등록된 식품이 없습니다.</p>

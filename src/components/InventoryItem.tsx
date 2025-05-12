@@ -56,10 +56,10 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
       onClick={handleClick}
     >
       {isSelectionMode && (
-        <div className="absolute top-0 right-0 z-10">
+        <div className="absolute top-0 right-0 z-10 p-1">
           <Checkbox 
             checked={isSelected}
-            className="border-2"
+            className="border-2 h-5 w-5"
             onCheckedChange={(checked) => {
               if (checked) {
                 selectItem(item.item_id);

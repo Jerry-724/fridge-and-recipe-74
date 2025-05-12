@@ -32,7 +32,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
       <h1 
-        className={`text-4xl font-bold text-[#70B873] mb-6 transition-all duration-1000 ${
+        className={`text-4xl font-bold text-[#70B873] mb-8 transition-all duration-1000 ${
           animationStage >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
       >
@@ -43,7 +43,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           animationStage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
       >
-        <Refrigerator size={80} color="#70B873" />
+        <Refrigerator size={120} color="#70B873" />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Item, Category } from '../types/api';
 import { useAuth } from './AuthContext';
@@ -272,6 +273,13 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const clearSelectedItems = () => {
     setSelectedItems([]);
   };
+  
+  // When selection mode is turned off, clear selected items
+  useEffect(() => {
+    if (!isSelectionMode) {
+      clearSelectedItems();
+    }
+  }, [isSelectionMode]);
   
   return (
     <InventoryContext.Provider

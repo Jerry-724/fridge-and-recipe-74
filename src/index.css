@@ -45,6 +45,7 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS devices */
   }
 
   h1, h2, h3, h4 {
@@ -52,13 +53,19 @@
   }
 
   /* Hide scrollbar for all elements */
-  .scrollbar-none::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     display: none;  /* Hide scrollbar for Chrome, Safari, Opera */
   }
   
-  .scrollbar-none {
+  * {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Make all scrollable areas work with touch */
+  div[class*="overflow-y"], div[class*="overflow-x"] {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
   
   /* Add smooth transitions */
