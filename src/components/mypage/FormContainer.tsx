@@ -1,6 +1,5 @@
 
 import React, { ReactNode } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface FormContainerProps {
   title?: string;
@@ -9,14 +8,10 @@ interface FormContainerProps {
 
 const FormContainer: React.FC<FormContainerProps> = ({ title, children }) => {
   return (
-    <Card className="w-full">
-      {title && (
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
-      )}
-      <CardContent>{children}</CardContent>
-    </Card>
+    <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
+      {title && <h2 className="text-lg font-medium mb-4">{title}</h2>}
+      {children}
+    </div>
   );
 };
 

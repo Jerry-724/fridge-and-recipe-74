@@ -20,7 +20,7 @@ interface InventoryContextType {
   setSelectionMode: (mode: boolean) => void;
 }
 
-// Updated mock categories matching the new structure
+// Updated mock categories consolidating seafood categories
 const MOCK_CATEGORIES: Category[] = [
   // 식물성
   { category_id: 1, category_major_name: '식물성', category_sub_name: '곡류·서류' },
@@ -34,7 +34,7 @@ const MOCK_CATEGORIES: Category[] = [
   { category_id: 7, category_major_name: '동물성', category_sub_name: '육류' },
   { category_id: 8, category_major_name: '동물성', category_sub_name: '알류' },
   { category_id: 9, category_major_name: '동물성', category_sub_name: '유제품' },
-  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' }, // Changed from '어패류·해산물' to '해산물' for consistency
+  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' }, // Consolidated seafood category
   
   // 가공식품
   { category_id: 11, category_major_name: '가공식품', category_sub_name: '가공식품' },

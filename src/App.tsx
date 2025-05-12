@@ -1,6 +1,7 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -23,8 +24,16 @@ const App = () => {
         <AuthProvider>
           <InventoryProvider>
             <RecipeProvider>
-              {/* Remove duplicate Toaster component, keep only one */}
-              <Sonner />
+              {/* Use only one Toaster with custom settings */}
+              <Toaster 
+                position="top-center" 
+                closeButton 
+                richColors 
+                toastOptions={{ 
+                  duration: 1000,
+                  className: "custom-toast" 
+                }} 
+              />
               <BrowserRouter>
                 <Routes>
                   {/* Public routes */}

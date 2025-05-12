@@ -1,76 +1,79 @@
 
-import React from 'react';
-import { User } from '../../types/api';
-import FormContainer from './FormContainer';
+import React, { ReactNode } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { User as UserIcon, Settings, Lock, LogOut, Trash2 } from "lucide-react";
 
 interface ViewModeProps {
-  user: User | null;
-  onModeChange: (mode: 'view' | 'editNickname' | 'editPassword' | 'deleteAccount') => void;
+  user: {
+    username: string;
+    email: string;
+  } | null;
+  onModeChange: (mode: 'editNickname' | 'editPassword' | 'deleteAccount') => void;
   onLogout: () => void;
+  notificationSettings?: ReactNode;
 }
 
-const ViewMode: React.FC<ViewModeProps> = ({ user, onModeChange, onLogout }) => {
+const ViewMode: React.FC<ViewModeProps> = ({ user, onModeChange, onLogout, notificationSettings }) => {
   return (
-    <FormContainer>
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">내 정보</h2>
-        <Card>
-          <CardContent className="p-4 space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">아이디:</span>
-              <span>{user?.login_id || '-'}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">닉네임:</span>
-              <span>{user?.username || '-'}</span>
-            </div>
-          </CardContent>
-        </Card>
+    <>
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
+        <h2 className="text-lg font-medium mb-4 mt-1">내 정보</h2>
         
-        <div className="space-y-2">
+        <div className="space-y-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">닉네임</div>
+            <div className="flex justify-between items-center">
+              <div className="font-medium">{user?.username || '로드 중...'}</div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onModeChange('editNickname')}
+              >
+                변경
+              </Button>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-100 pt-4">
+            <div className="text-sm text-gray-500 mb-1">이메일</div>
+            <div>{user?.email || '로드 중...'}</div>
+          </div>
+          
+          {notificationSettings}
+          
+          <div className="border-t border-gray-100 pt-4">
+            <div className="text-sm text-gray-500 mb-1">비밀번호</div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onModeChange('editPassword')}
+            >
+              비밀번호 변경
+            </Button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+        <h3 className="text-sm font-medium text-gray-500">계정 관리</h3>
+        <div className="space-y-4">
           <Button
-            onClick={() => onModeChange('editNickname')}
             variant="outline"
-            className="w-full justify-start text-left"
+            className="w-full justify-start"
+            onClick={onLogout}
           >
-            <UserIcon className="mr-2 h-4 w-4" />
-            닉네임 변경
+            로그아웃
           </Button>
+          
           <Button
-            onClick={() => onModeChange('editPassword')}
             variant="outline"
-            className="w-full justify-start text-left"
-          >
-            <Lock className="mr-2 h-4 w-4" />
-            비밀번호 변경
-          </Button>
-          <Button
+            className="w-full justify-start text-destructive hover:text-destructive"
             onClick={() => onModeChange('deleteAccount')}
-            variant="outline"
-            className="w-full justify-start text-left text-destructive hover:text-destructive"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
             계정 탈퇴
           </Button>
         </div>
-        
-        <div>
-          <Button
-            onClick={onLogout}
-            variant="secondary"
-            className="w-full"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            로그아웃
-          </Button>
-        </div>
       </div>
-    </FormContainer>
+    </>
   );
 };
 

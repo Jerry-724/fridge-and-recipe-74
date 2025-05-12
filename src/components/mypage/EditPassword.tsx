@@ -47,7 +47,7 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onCancel, onSubmit, loading
   return (
     <FormContainer title="비밀번호 변경">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
           <FormField
             control={form.control}
             name="currentPassword"
@@ -90,7 +90,7 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onCancel, onSubmit, loading
             )}
           />
           
-          <div className="flex space-x-2 pt-4">
+          <div className="flex space-x-2 pt-3">
             <Button
               type="button"
               onClick={onCancel}

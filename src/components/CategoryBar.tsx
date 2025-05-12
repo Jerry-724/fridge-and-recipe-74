@@ -44,7 +44,7 @@ const CategoryBar: React.FC = () => {
   return (
     <div 
       ref={scrollRef}
-      className="category-scroll flex overflow-x-auto py-4 px-2 bg-white sticky top-0 z-10"
+      className="category-scroll flex overflow-x-auto py-3 px-1 bg-white sticky top-0 z-10"
     >
       {majorCategories.map((categoryName, index) => {
         const isSelected = selectedCategoryId !== null && 
@@ -53,19 +53,19 @@ const CategoryBar: React.FC = () => {
         return (
           <div 
             key={index}
-            className={`flex flex-col items-center min-w-[80px] mx-2 ${
+            className={`flex flex-col items-center min-w-[70px] mx-1 ${
               isSelected ? 'text-primary' : 'text-gray-700'
             }`}
             onClick={() => handleCategoryClick(categoryName)}
           >
             <div 
-              className={`text-3xl mb-2 p-3 rounded-lg ${
+              className={`text-4xl mb-1 p-2 rounded-lg ${
                 isSelected ? 'bg-primary bg-opacity-20' : 'bg-gray-100'
               }`}
             >
-              {categoryImages[categoryName as keyof typeof categoryImages] || <Refrigerator size={24} />}
+              {categoryImages[categoryName as keyof typeof categoryImages] || <Refrigerator size={28} />}
             </div>
-            <span className="text-xs text-center w-full truncate">
+            <span className="text-xs font-medium text-center w-full truncate">
               {categoryName}
             </span>
           </div>

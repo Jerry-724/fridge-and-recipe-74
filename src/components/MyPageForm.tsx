@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 // Import our enhanced components
 import ViewMode from './mypage/ViewMode';
@@ -14,6 +16,7 @@ type FormMode = 'view' | 'editNickname' | 'editPassword' | 'deleteAccount';
 const MyPageForm = () => {
   const [mode, setMode] = useState<FormMode>('view');
   const [loading, setLoading] = useState(false);
+  const [notifications, setNotifications] = useState(false);
   const { user, updateUser, deleteAccount, logout } = useAuth();
 
   const resetForm = () => {
@@ -31,11 +34,11 @@ const MyPageForm = () => {
         throw new Error('비밀번호가 일치하지 않습니다.');
       }
       
-      // Update nickname
-      await updateUser({ username: newNickname });
+      // Update nickname - pass the password as well
+      await updateUser({ username: newNickname, password: currentPassword });
       
       // Show success toast
-      toast("변경되었습니다.");
+      toast("변경되었습니다.", { duration: 1000 });
       
       resetForm();
     } catch (error: any) {
@@ -64,11 +67,11 @@ const MyPageForm = () => {
         throw new Error('비밀번호가 일치하지 않습니다.');
       }
       
-      // Update password
-      await updateUser({ password: newPassword });
+      // Update password - pass both the current and new password
+      await updateUser({ password: currentPassword, newPassword });
       
       // Show success toast
-      toast("변경되었습니다.");
+      toast("변경되었습니다.", { duration: 1000 });
       
       resetForm();
     } catch (error: any) {
@@ -96,7 +99,7 @@ const MyPageForm = () => {
       await deleteAccount(password);
       
       // Show success toast
-      toast("탈퇴되었습니다.");
+      toast("탈퇴되었습니다.", { duration: 1000 });
       
       resetForm();
     } catch (error: any) {
@@ -112,11 +115,16 @@ const MyPageForm = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      toast("로그아웃되었습니다.");
+      toast("로그아웃되었습니다.", { duration: 1000 });
     } catch (error) {
       console.error(error);
       toast("로그아웃에 실패했습니다.");
     }
+  };
+
+  const handleToggleNotifications = (checked: boolean) => {
+    setNotifications(checked);
+    toast(`알림 ${checked ? '활성화' : '비활성화'} 되었습니다.`, { duration: 1000 });
   };
 
   // Render form based on mode using enhanced components
@@ -152,16 +160,26 @@ const MyPageForm = () => {
       default:
         return (
           <ViewMode 
-            user={user} 
-            onModeChange={setMode} 
-            onLogout={handleLogout} 
+            user={user}
+            onModeChange={setMode}
+            onLogout={handleLogout}
+            notificationSettings={
+              <div className="flex items-center justify-between py-3 border-t border-gray-100">
+                <Label htmlFor="notifications" className="text-sm">푸시 알림</Label>
+                <Switch
+                  id="notifications"
+                  checked={notifications}
+                  onCheckedChange={handleToggleNotifications}
+                />
+              </div>
+            }
           />
         );
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto p-4 mt-6">
       {renderForm()}
     </div>
   );
