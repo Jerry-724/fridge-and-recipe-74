@@ -1,7 +1,14 @@
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { PlusIcon, MinusIcon } from 'lucide-react';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 interface AddItemButtonProps {
   onOpenImagePicker: () => void;
@@ -12,24 +19,67 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({
   onOpenImagePicker, 
   onOpenDeleteConfirmation 
 }) => {
-  const { isSelectionMode, selectedItems } = useInventory();
+  const { setSelectionMode } = useInventory();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.addEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  const handleAddItems = () => {
+    setIsOpen(false);
+    onOpenImagePicker();
+  };
+  
+  const handleDeleteItems = () => {
+    setIsOpen(false);
+    setSelectionMode(true);
+    onOpenDeleteConfirmation();
+  };
   
   return (
-    <button
-      onClick={isSelectionMode ? onOpenDeleteConfirmation : onOpenImagePicker}
-      className={`fixed bottom-20 right-5 w-14 h-14 rounded-full shadow-lg flex items-center justify-center z-20 ${
-        isSelectionMode 
-          ? selectedItems.length > 0 ? 'bg-destructive' : 'bg-gray-400' 
-          : 'bg-primary'
-      }`}
-      disabled={isSelectionMode && selectedItems.length === 0}
-    >
-      {isSelectionMode ? (
-        <MinusIcon className="text-white" size={24} />
-      ) : (
-        <PlusIcon className="text-white" size={24} />
-      )}
-    </button>
+    <div ref={dropdownRef} className="fixed bottom-20 right-5 z-20">
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            className="bg-[#70B873] hover:bg-[#5fa762] text-white font-bold px-4 py-2 rounded flex items-center gap-2"
+            onClick={() => setIsOpen(true)}
+          >
+            <PencilIcon size={18} />
+            편집
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent 
+          className="mt-1 border-2 border-[#70B873] p-0 rounded-md" 
+          align="end"
+          sideOffset={5}
+        >
+          <DropdownMenuItem
+            className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
+            onClick={handleAddItems}
+          >
+            재고 추가+
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
+            onClick={handleDeleteItems}
+          >
+            재고 삭제-
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
 

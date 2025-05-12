@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useInventory } from '../context/InventoryContext';
 import CategoryBar from '../components/CategoryBar';
 import InventoryList from '../components/InventoryList';
@@ -12,34 +12,11 @@ const InventoryPage: React.FC = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
   const { isSelectionMode, setSelectionMode } = useInventory();
   
-  // Enable selection mode with long press (1.5 seconds)
-  const handleLongPress = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    setSelectionMode(true);
-  };
-  
-  useEffect(() => {
-    // Clean up selection mode when component unmounts
-    return () => {
-      setSelectionMode(false);
-    };
-  }, [setSelectionMode]);
-  
   return (
     <div className="h-full flex flex-col">
       <CategoryBar />
       
-      <div 
-        className="flex-1"
-        onTouchStart={(e) => {
-          let timer = setTimeout(() => handleLongPress(e), 1500);
-          e.currentTarget.addEventListener('touchend', () => clearTimeout(timer), { once: true });
-        }}
-        onMouseDown={(e) => {
-          let timer = setTimeout(() => handleLongPress(e), 1500);
-          e.currentTarget.addEventListener('mouseup', () => clearTimeout(timer), { once: true });
-        }}
-      >
+      <div className="flex-1">
         <InventoryList />
       </div>
       
@@ -53,7 +30,10 @@ const InventoryPage: React.FC = () => {
       )}
       
       {showDeleteConfirmation && (
-        <DeleteConfirmation onClose={() => setShowDeleteConfirmation(false)} />
+        <DeleteConfirmation onClose={() => {
+          setShowDeleteConfirmation(false);
+          setSelectionMode(false);
+        }} />
       )}
     </div>
   );
