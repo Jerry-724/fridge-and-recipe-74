@@ -61,16 +61,6 @@
     scrollbar-width: none;  /* Firefox */
   }
   
-  /* Hide scrollbar utility */
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
   /* Add smooth transitions */
   .page-transition {
     @apply transition-all duration-300 ease-in-out;
@@ -78,7 +68,7 @@
   
   /* Input field styling */
   .input-field {
-    @apply w-full border border-gray-300 rounded-md px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    @apply w-full border border-gray-300 rounded-md px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
   }
 
   /* Button styling */

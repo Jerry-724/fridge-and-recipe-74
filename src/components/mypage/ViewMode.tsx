@@ -5,9 +5,7 @@ import FormContainer from './FormContainer';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { User as UserIcon, Settings, Lock, LogOut, Trash2, Bell } from "lucide-react";
+import { User as UserIcon, Settings, Lock, LogOut, Trash2 } from "lucide-react";
 
 interface ViewModeProps {
   user: User | null;
@@ -16,12 +14,9 @@ interface ViewModeProps {
 }
 
 const ViewMode: React.FC<ViewModeProps> = ({ user, onModeChange, onLogout }) => {
-  // State for notification toggle
-  const [notifications, setNotifications] = React.useState(false);
-
   return (
     <FormContainer>
-      <div className="space-y-4 mt-4"> {/* Increased top margin */}
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold">내 정보</h2>
         <Card>
           <CardContent className="p-4 space-y-2">
@@ -36,19 +31,6 @@ const ViewMode: React.FC<ViewModeProps> = ({ user, onModeChange, onLogout }) => 
             </div>
           </CardContent>
         </Card>
-        
-        <div className="flex items-center justify-between py-2">
-          <div className="flex items-center space-x-2">
-            <Bell className="h-4 w-4 text-muted-foreground" />
-            <Label htmlFor="notifications">푸시 알림</Label>
-          </div>
-          <Switch 
-            id="notifications"
-            checked={notifications}
-            onCheckedChange={setNotifications}
-          />
-        </div>
-        <Separator />
         
         <div className="space-y-2">
           <Button

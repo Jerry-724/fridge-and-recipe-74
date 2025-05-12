@@ -38,9 +38,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
   
   return (
     <div className="w-full max-w-md px-6 animate-slide-down">
-      <h2 className="text-2xl font-medium text-center text-[#70B873] mb-6">뭐먹을냉?</h2>
+      <h2 className="text-2xl font-medium text-center text-gray-800 mb-8">뭐먹을냉?</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-3"> {/* Reduced spacing */}
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
             type="text"
@@ -72,7 +72,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
         </button>
       </form>
       
-      <div className="mt-4 text-center"> {/* Reduced spacing */}
+      <div className="mt-6 text-center">
         <button
           onClick={onToggleSignup}
           className="text-primary hover:text-primary-dark transition-colors"
