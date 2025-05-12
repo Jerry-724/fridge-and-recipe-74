@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { AlertTriangle } from "lucide-react";
 import FormContainer from './FormContainer';
 
 interface DeleteAccountProps {
@@ -21,7 +21,7 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
   return (
     <FormContainer>
       <Alert className="border-red-500 bg-red-50 mb-4">
-        <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+        <AlertTriangle className="h-5 w-5 text-red-500" />
         <AlertDescription className="text-red-500 font-medium text-base">
           계정을 삭제하면 모든 데이터가 영구적으로 제거됩니다.
         </AlertDescription>

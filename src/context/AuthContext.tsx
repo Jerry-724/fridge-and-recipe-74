@@ -1,6 +1,14 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { User, AuthResponse } from '../types/api';
+import { AuthResponse } from '../types/api';
+
+// Export the User interface so it can be imported elsewhere
+export interface User {
+  login_id: string;
+  username: string;
+  notification: boolean;
+  password?: string;
+}
 
 interface AuthContextType {
   user: User | null;
