@@ -1,13 +1,12 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { AuthResponse } from '../types/api';
+import { toast } from "sonner";
 
-// Export the User interface so it can be imported elsewhere
+// Define User type and export it
 export interface User {
+  user_id: number;
   login_id: string;
   username: string;
-  notification: boolean;
-  password?: string;
 }
 
 interface AuthContextType {
@@ -15,145 +14,101 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (login_id: string, password: string) => Promise<void>;
-  signup: (login_id: string, password: string, username: string) => Promise<void>;
   logout: () => void;
-  updateUser: (user: Partial<User>) => Promise<void>;
-  deleteAccount: (password: string) => Promise<void>;
+  signup: (login_id: string, password: string, username: string) => Promise<void>;
 }
+
+// Mock user data for development
+const MOCK_USER: User = {
+  user_id: 1,
+  login_id: 'user123',
+  username: '김냉장',
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
+  // For development/testing: uncomment to start with a logged-in user
   useEffect(() => {
-    // Check for token in localStorage
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-      setIsAuthenticated(true);
-    }
-    
-    setIsLoading(false);
+    checkAuth();
   }, []);
-
+  
+  const checkAuth = async () => {
+    // In a real app, check token from localStorage and validate with API
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      try {
+        // Mock API call to validate token
+        await new Promise(resolve => setTimeout(resolve, 300));
+        setUser(MOCK_USER);
+      } catch (error) {
+        logout();
+      }
+    }
+  };
+  
   const login = async (login_id: string, password: string) => {
+    setIsLoading(true);
     try {
-      // For demonstration, we'll simulate an API call
-      // In a real app, you would call your backend API
-      setIsLoading(true);
-      
-      // Simulate API delay
+      // In a real app, send credentials to API
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock response - in a real app this would come from your API
-      const mockResponse: AuthResponse = {
-        user: {
-          login_id,
-          username: "사용자", // Default username
-          notification: true,
-        },
-        token: "mock-jwt-token"
-      };
-      
-      localStorage.setItem('token', mockResponse.token);
-      localStorage.setItem('user', JSON.stringify(mockResponse.user));
-      
-      setUser(mockResponse.user);
-      setIsAuthenticated(true);
-      
+      // Mock validation
+      if (login_id === 'user123' && password === 'password123') {
+        // Store token
+        localStorage.setItem('auth_token', 'mock_token_123');
+        setUser(MOCK_USER);
+        toast("로그인에 성공했습니다");
+      } else {
+        throw new Error('아이디 또는 비밀번호가 일치하지 않습니다.');
+      }
     } catch (error) {
-      console.error('Login failed:', error);
-      throw new Error('로그인에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const signup = async (login_id: string, password: string, username: string) => {
-    try {
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock signup success - in a real app this would be your API call
-      // After successful signup, the user would need to log in manually
-      
-    } catch (error) {
-      console.error('Signup failed:', error);
-      throw new Error('회원가입에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setIsAuthenticated(false);
-  };
-
-  const updateUser = async (updatedFields: Partial<User>) => {
-    try {
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, send the updated fields to your API
-      // For now, just update the local state
-      const updatedUser = { ...user, ...updatedFields } as User;
-      
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      
-    } catch (error) {
-      console.error('User update failed:', error);
-      throw new Error('사용자 정보 업데이트에 실패했습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const deleteAccount = async (password: string) => {
-    try {
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, send the delete request to your API
-      // For now, just clear local storage and state
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('auth_token');
       setUser(null);
-      setIsAuthenticated(false);
-      
-    } catch (error) {
-      console.error('Account deletion failed:', error);
-      throw new Error('계정 삭제에 실패했습니다.');
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
-
+  
+  const logout = () => {
+    localStorage.removeItem('auth_token');
+    setUser(null);
+  };
+  
+  const signup = async (login_id: string, password: string, username: string) => {
+    setIsLoading(true);
+    try {
+      // In a real app, send registration data to API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock validation
+      if (login_id === 'user123') {
+        throw new Error('이미 사용중인 아이디입니다.');
+      }
+      
+      // In a real app, don't set the user here, just return success
+      // User should log in after registration
+      toast("회원가입 되었습니다");
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated,
+        isAuthenticated: !!user,
         isLoading,
         login,
-        signup,
         logout,
-        updateUser,
-        deleteAccount
+        signup,
       }}
     >
       {children}

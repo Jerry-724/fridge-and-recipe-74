@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface SignupFormProps {
   onToggleLogin: () => void;
@@ -12,42 +13,25 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const { signup, isLoading } = useAuth();
-  const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!login_id || !password || !confirmPassword || !username) {
-      toast({
-        title: '오류',
-        description: '모든 필드를 입력해주세요.',
-        variant: 'destructive',
-      });
+      toast("모든 필드를 입력해주세요.");
       return;
     }
     
     if (password !== confirmPassword) {
-      toast({
-        title: '오류',
-        description: '비밀번호가 일치하지 않습니다.',
-        variant: 'destructive',
-      });
+      toast("비밀번호가 일치하지 않습니다.");
       return;
     }
     
     try {
       await signup(login_id, password, username);
-      toast({
-        title: '회원가입 성공',
-        description: '이제 로그인을 진행해주세요.',
-      });
       onToggleLogin();
     } catch (error) {
-      toast({
-        title: '회원가입 실패',
-        description: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
+      toast(error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
     }
   };
   

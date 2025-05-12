@@ -181,11 +181,6 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
                     <Trash size={16} />
                   </button>
                   
-                  <div className="mb-3">
-                    <div className="text-xs text-gray-500">분류</div>
-                    <div className="font-medium">{item.major_category} &gt; {item.sub_category}</div>
-                  </div>
-                  
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">식품 이름</label>
                     <input

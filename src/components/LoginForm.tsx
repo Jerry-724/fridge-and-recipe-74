@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface LoginFormProps {
   onToggleSignup: () => void;
@@ -11,28 +11,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
   const [login_id, setLoginId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { login, isLoading } = useAuth();
-  const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!login_id || !password) {
-      toast({
-        title: '오류',
-        description: '모든 필드를 입력해주세요.',
-        variant: 'destructive',
-      });
+      toast("모든 필드를 입력해주세요.");
       return;
     }
     
     try {
       await login(login_id, password);
     } catch (error) {
-      toast({
-        title: '로그인 실패',
-        description: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
+      toast(error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
     }
   };
   
