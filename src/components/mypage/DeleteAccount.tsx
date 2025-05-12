@@ -20,9 +20,9 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
   
   return (
     <FormContainer>
-      <Alert className="border-red-500 bg-red-50 mb-6">
-        <AlertTriangle className="h-6 w-6 text-red-500" />
-        <AlertDescription className="text-red-500 font-medium text-lg">
+      <Alert className="border-red-500 bg-red-50 mb-4">
+        <AlertTriangle className="h-5 w-5 text-red-500" />
+        <AlertDescription className="text-red-500 font-medium text-base">
           계정을 삭제하면 모든 데이터가 영구적으로 제거됩니다.
         </AlertDescription>
       </Alert>

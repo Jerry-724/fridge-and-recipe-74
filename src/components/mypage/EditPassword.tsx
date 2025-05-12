@@ -21,7 +21,7 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onCancel, onSubmit, loading
   return (
     <FormContainer>
       <form onSubmit={handleSubmit} className="space-y-3">
-        <h2 className="text-base font-medium mb-2">비밀번호 변경</h2>
+        <h2 className="text-lg font-medium mb-2">비밀번호 변경</h2>
         
         <div className="space-y-1">
           <label className="block text-sm text-gray-700">현재 비밀번호</label>

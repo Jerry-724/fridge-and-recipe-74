@@ -72,7 +72,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
       )}
       
       <div 
-        className={`text-4xl mb-2 ${
+        className={`text-3xl mb-2 ${
           isExpiringSoon ? 'text-destructive' : ''
         }`}
       >

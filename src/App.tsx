@@ -25,7 +25,7 @@ const App = () => {
           <InventoryProvider>
             <RecipeProvider>
               {/* Only show one toast at the top */}
-              <Sonner position="top-center" closeButton={false} duration={1000} />
+              <Sonner position="top-center" closeButton duration={1000} />
               <BrowserRouter>
                 <Routes>
                   {/* Public routes */}

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -53,7 +54,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   
   return (
     <div className="w-full max-w-md px-6 animate-slide-down">
-      <h2 className="text-2xl font-bold text-center mb-6" style={{ color: '#70B873' }}>뭐먹을냉?</h2>
+      <h2 className="text-2xl font-medium text-center mb-6" style={{ color: '#70B873' }}>뭐먹을냉?</h2>
       
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
