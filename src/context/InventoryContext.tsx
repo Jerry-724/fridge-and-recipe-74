@@ -34,7 +34,7 @@ const MOCK_CATEGORIES: Category[] = [
   { category_id: 7, category_major_name: '동물성', category_sub_name: '육류' },
   { category_id: 8, category_major_name: '동물성', category_sub_name: '알류' },
   { category_id: 9, category_major_name: '동물성', category_sub_name: '유제품' },
-  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' }, // Renamed from '어패류·해산물' to just '해산물'
+  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' },
   
   // 가공식품
   { category_id: 11, category_major_name: '가공식품', category_sub_name: '가공식품' },
@@ -93,7 +93,7 @@ const MOCK_ITEMS: Item[] = [
   {
     item_id: 6,
     user_id: 1,
-    category_id: 5, // 과일류
+    category_id: 5, // 과��류
     item_name: '오렌지',
     expiry_date: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 days from now
     created_at: new Date().toISOString(),

@@ -40,11 +40,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         뭐먹을냉?
       </h1>
       <div 
-        className={`text-6xl transition-all duration-1000 ${
+        className={`text-8xl transition-all duration-1000 ${
           animationStage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
       >
-        <Refrigerator size={72} className="text-primary" />
+        <Refrigerator size={96} className="text-primary" />
       </div>
     </div>
   );

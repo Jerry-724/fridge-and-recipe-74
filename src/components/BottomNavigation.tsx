@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FileText, Refrigerator, User } from 'lucide-react';
 
 const BottomNavigation: React.FC = () => {
   const location = useLocation();
@@ -17,8 +18,8 @@ const BottomNavigation: React.FC = () => {
           isActive('/recipe') ? 'text-primary' : 'text-gray-500'
         }`}
       >
-        <span className="text-xl">📝</span>
-        <span className="text-xs mt-1">레시피 추천</span>
+        <FileText size={24} />
+        <span className="text-xs font-bold mt-1">레시피 추천</span>
       </Link>
       
       <Link
@@ -27,8 +28,8 @@ const BottomNavigation: React.FC = () => {
           isActive('/inventory') ? 'text-primary' : 'text-gray-500'
         }`}
       >
-        <span className="text-xl">🧊</span>
-        <span className="text-xs mt-1">내 냉장고</span>
+        <Refrigerator size={24} />
+        <span className="text-xs font-bold mt-1">내 냉장고</span>
       </Link>
       
       <Link
@@ -37,8 +38,8 @@ const BottomNavigation: React.FC = () => {
           isActive('/mypage') ? 'text-primary' : 'text-gray-500'
         }`}
       >
-        <span className="text-xl">👤</span>
-        <span className="text-xs mt-1">마이페이지</span>
+        <User size={24} />
+        <span className="text-xs font-bold mt-1">마이페이지</span>
       </Link>
     </div>
   );
