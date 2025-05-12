@@ -2,10 +2,10 @@
 import React, { useRef } from 'react';
 import { useInventory } from '../context/InventoryContext';
 import { 
-  Meat, 
+  Beef, 
   Carrot, 
   Archive, 
-  Spices, 
+  Salt, 
   Cookie 
 } from 'lucide-react';
 
@@ -24,10 +24,10 @@ const CategoryBar: React.FC = () => {
   
   // Map categories to vector icons
   const categoryIcons = {
-    '동물성': Meat,
+    '동물성': Beef,
     '식물성': Carrot,
     '가공식품': Archive,
-    '조미료·양념': Spices,
+    '조미료·양념': Salt,
     '기타': Cookie,
   };
   
