@@ -45,6 +45,7 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    background-color: #F8F9FA;
   }
 
   h1, h2, h3, h4 {
@@ -57,6 +58,16 @@
   }
   
   .category-scroll {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Hide all scrollbars */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+  
+  .scrollbar-hide {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
@@ -94,14 +105,5 @@
       transform: translateY(0);
       opacity: 1;
     }
-  }
-
-  /* Hide scrollbar for chatbot when not needed */
-  .scrollbar-hide {
-    scrollbar-width: none;
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
   }
 }

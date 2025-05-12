@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { useToast } from '@/hooks/use-toast';
 import { toast } from 'sonner';
 import { Item } from '../types/api';
 import { Refrigerator, X, Trash } from 'lucide-react'; 
@@ -26,7 +25,6 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
   const [recognizedItems, setRecognizedItems] = useState<OCRItem[]>([]);
   
   const { addItem, categories } = useInventory();
-  const { toast: uiToast } = useToast();
   
   // Detect if device is mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -39,7 +37,7 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
         const mockItems: OCRItem[] = [
           {
             item_name: '우유',
-            major_category: '동물성 식재료',
+            major_category: '동물성',
             sub_category: '유제품',
             expiry_text: '1주',
             expiry_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -47,7 +45,7 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
           },
           {
             item_name: '도너츠',
-            major_category: '가공식품·저장식품',
+            major_category: '가공식품',
             sub_category: '가공식품',
             expiry_text: '1주',
             expiry_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -55,7 +53,7 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
           },
           {
             item_name: '바나나',
-            major_category: '식물성 식재료',
+            major_category: '식물성',
             sub_category: '과일류',
             expiry_text: '3일',
             expiry_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -95,15 +93,14 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
         });
       }
       
-      toast("식품들이 추가되었습니다.", {
+      // Only show one notification for all items
+      toast(`${recognizedItems.length}개의 식품이 추가되었습니다.`, {
         duration: 1000,
       });
+      
       onClose();
     } catch (error) {
-      uiToast({
-        title: '오류',
-        description: '식품 추가에 실패했습니다.',
-      });
+      toast("식품 추가에 실패했습니다.");
     }
   };
 
@@ -174,7 +171,7 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
               {recognizedItems.length}개의 식품이 인식되었습니다.
             </div>
             
-            <div className="space-y-6 max-h-60 overflow-y-auto">
+            <div className="space-y-6 max-h-60 overflow-y-auto scrollbar-hide">
               {recognizedItems.map((item, index) => (
                 <div key={index} className="border border-gray-200 rounded-md p-3 relative">
                   <button 
@@ -183,6 +180,11 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
                   >
                     <Trash size={16} />
                   </button>
+                  
+                  <div className="mb-3">
+                    <div className="text-xs text-gray-500">분류</div>
+                    <div className="font-medium">{item.major_category} &gt; {item.sub_category}</div>
+                  </div>
                   
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">식품 이름</label>
@@ -196,12 +198,19 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
                   
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">유통기한</label>
-                    <input
-                      type="date"
-                      value={item.expiry_date}
-                      onChange={(e) => handleItemChange(index, 'expiry_date', e.target.value)}
-                      className="input-field mb-2"
-                    />
+                    <div className="flex items-center mb-2">
+                      <input
+                        type="date"
+                        value={item.expiry_date}
+                        onChange={(e) => handleItemChange(index, 'expiry_date', e.target.value)}
+                        className="input-field flex-1"
+                      />
+                      {item.expiry_text && (
+                        <div className="ml-2 text-sm text-gray-500">
+                          약 {item.expiry_text}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
                   <div>
