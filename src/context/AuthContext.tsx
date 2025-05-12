@@ -16,6 +16,8 @@ interface AuthContextType {
   login: (login_id: string, password: string) => Promise<void>;
   logout: () => void;
   signup: (login_id: string, password: string, username: string) => Promise<void>;
+  updateUser: (updates: Partial<User>) => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
 }
 
 // Mock user data for development
@@ -99,6 +101,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     }
   };
+
+  // Add the updateUser function
+  const updateUser = async (updates: Partial<User>) => {
+    setIsLoading(true);
+    try {
+      // In a real app, send updates to API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Update the local user object
+      if (user) {
+        const updatedUser = { ...user, ...updates };
+        setUser(updatedUser);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Add the deleteAccount function
+  const deleteAccount = async (password: string) => {
+    setIsLoading(true);
+    try {
+      // In a real app, send delete request to API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Simulate success and clear local data
+      logout();
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   return (
     <AuthContext.Provider
@@ -109,6 +146,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         signup,
+        updateUser,
+        deleteAccount
       }}
     >
       {children}
