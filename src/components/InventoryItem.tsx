@@ -3,13 +3,14 @@ import React from 'react';
 import { Item } from '../types/api';
 import { useInventory } from '../context/InventoryContext';
 import { Checkbox } from "@/components/ui/checkbox";
+import { Refrigerator } from 'lucide-react';
 
 interface InventoryItemProps {
   item: Item;
 }
 
 // Mapping for food emoji based on item name
-const getFoodEmoji = (itemName: string): string => {
+const getFoodEmoji = (itemName: string): string | JSX.Element => {
   const emojiMap: Record<string, string> = {
     '소고기': '🥩', '돼지고기': '🥓', '닭고기': '🍗',
     '생선': '🐟', '새우': '🦐', '오징어': '🦑',
@@ -23,6 +24,11 @@ const getFoodEmoji = (itemName: string): string => {
     '아이스크림': '🍦', '케이크': '🍰', '쿠키': '🍪',
     '초콜릿': '🍫', '커피': '☕', '주스': '🧃',
   };
+  
+  // Check if the item name contains "냉장" or "냉동"
+  if (itemName.includes('냉장') || itemName.includes('냉동')) {
+    return <Refrigerator size={32} />;
+  }
   
   // Find the first matching key or use a default
   for (const [key, emoji] of Object.entries(emojiMap)) {
@@ -79,7 +85,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
         {getFoodEmoji(item.item_name)}
       </div>
       
-      <div className="text-sm font-medium">{item.item_name}</div>
+      <div className="text-sm font-bold">{item.item_name}</div>
       
       <div className={`text-xs mt-1 ${
         isExpiringSoon ? 'text-destructive' : 'text-gray-500'

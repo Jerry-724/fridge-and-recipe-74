@@ -4,7 +4,7 @@ import RecipeChatbot from '../components/RecipeChatbot';
 
 const RecipePage: React.FC = () => {
   return (
-    <div className="h-screen pb-16">
+    <div className="h-screen pb-16 bg-[#faf8f0]"> {/* Ivory background color */}
       <RecipeChatbot />
     </div>
   );

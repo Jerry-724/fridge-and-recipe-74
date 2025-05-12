@@ -12,18 +12,45 @@ const InventoryPage: React.FC = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
   const { isSelectionMode, setSelectionMode } = useInventory();
   
-  // Enable selection mode with long press (1.5 seconds)
+  // Enable selection mode with long press (1 second instead of 1.5)
   const handleLongPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     setSelectionMode(true);
   };
   
+  // Handle Escape key press to exit selection mode
   useEffect(() => {
-    // Clean up selection mode when component unmounts
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isSelectionMode) {
+        setSelectionMode(false);
+      }
+    };
+
+    // Add event listener for escape key
+    document.addEventListener('keydown', handleKeyDown);
+    
+    // Handle back button on mobile
+    const handlePopState = () => {
+      if (isSelectionMode) {
+        setSelectionMode(false);
+        // Prevent actual navigation
+        window.history.pushState(null, '', window.location.pathname);
+      }
+    };
+
+    // Add event listeners
+    if (isSelectionMode) {
+      window.history.pushState(null, '', window.location.pathname);
+      window.addEventListener('popstate', handlePopState);
+    }
+    
+    // Clean up event listeners and selection mode when component unmounts
     return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handlePopState);
       setSelectionMode(false);
     };
-  }, [setSelectionMode]);
+  }, [isSelectionMode, setSelectionMode]);
   
   return (
     <div className="pb-16">
@@ -32,11 +59,11 @@ const InventoryPage: React.FC = () => {
       <div 
         className="pb-20"
         onTouchStart={(e) => {
-          let timer = setTimeout(() => handleLongPress(e), 1500);
+          let timer = setTimeout(() => handleLongPress(e), 1000);
           e.currentTarget.addEventListener('touchend', () => clearTimeout(timer), { once: true });
         }}
         onMouseDown={(e) => {
-          let timer = setTimeout(() => handleLongPress(e), 1500);
+          let timer = setTimeout(() => handleLongPress(e), 1000);
           e.currentTarget.addEventListener('mouseup', () => clearTimeout(timer), { once: true });
         }}
       >

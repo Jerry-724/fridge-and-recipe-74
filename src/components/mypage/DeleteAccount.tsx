@@ -40,16 +40,16 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
   };
 
   return (
-    <FormContainer title="계정 탈퇴">
+    <FormContainer title="">
       <Alert variant="destructive" className="mb-4">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
+        <AlertCircle className="h-5 w-5" />
+        <AlertDescription className="text-base font-medium">
           정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.
         </AlertDescription>
       </Alert>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3"> {/* Reduced spacing */}
           <FormField
             control={form.control}
             name="password"
@@ -64,7 +64,7 @@ const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loadi
             )}
           />
           
-          <div className="flex space-x-2 pt-4">
+          <div className="flex space-x-2 pt-3"> {/* Reduced spacing */}
             <Button
               type="button"
               onClick={onCancel}
