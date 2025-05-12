@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { Refrigerator } from 'lucide-react'; // Import Refrigerator icon
+import { Refrigerator } from 'lucide-react'; 
 
 // Mapping of major categories to emoji icons
 const categoryImages = {
@@ -53,17 +53,17 @@ const CategoryBar: React.FC = () => {
         return (
           <div 
             key={index}
-            className={`flex flex-col items-center min-w-[80px] mx-2 ${
+            className={`flex flex-col items-center min-w-[70px] mx-1 ${
               isSelected ? 'text-primary' : 'text-gray-700'
             }`}
             onClick={() => handleCategoryClick(categoryName)}
           >
             <div 
-              className={`text-3xl mb-2 p-3 rounded-lg ${
+              className={`text-4xl mb-1 p-2 rounded-lg ${
                 isSelected ? 'bg-primary bg-opacity-20' : 'bg-gray-100'
               }`}
             >
-              {categoryImages[categoryName as keyof typeof categoryImages] || <Refrigerator size={24} />}
+              {categoryImages[categoryName as keyof typeof categoryImages] || <Refrigerator size={32} />}
             </div>
             <span className="text-xs text-center w-full truncate">
               {categoryName}

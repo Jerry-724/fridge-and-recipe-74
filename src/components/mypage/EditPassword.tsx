@@ -1,19 +1,6 @@
 
-import React from 'react';
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from 'react';
 import FormContainer from './FormContainer';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 
 interface EditPasswordProps {
   onCancel: () => void;
@@ -21,94 +8,78 @@ interface EditPasswordProps {
   loading: boolean;
 }
 
-const formSchema = z.object({
-  currentPassword: z.string().min(1, "현재 비밀번호를 입력해주세요"),
-  newPassword: z.string().min(6, "비밀번호는 6자 이상이어야 합니다"),
-  confirmPassword: z.string().min(1, "비밀번호 확인을 입력해주세요"),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "새 비밀번호가 일치하지 않습니다",
-  path: ["confirmPassword"],
-});
-
 const EditPassword: React.FC<EditPasswordProps> = ({ onCancel, onSubmit, loading }) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    await onSubmit(values.currentPassword, values.newPassword, values.confirmPassword);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(currentPassword, newPassword, confirmPassword);
   };
-
+  
   return (
-    <FormContainer title="비밀번호 변경">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="currentPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>현재 비밀번호</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+    <FormContainer>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <h2 className="text-lg font-medium mb-2">비밀번호 변경</h2>
+        
+        <div className="space-y-1">
+          <label className="block text-sm text-gray-700">현재 비밀번호</label>
+          <input
+            type="password"
+            className="input-field mb-2"
+            placeholder="현재 비밀번호"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+            disabled={loading}
           />
-          
-          <FormField
-            control={form.control}
-            name="newPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>새 비밀번호</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        </div>
+        
+        <div className="space-y-1">
+          <label className="block text-sm text-gray-700">새 비밀번호</label>
+          <input
+            type="password"
+            className="input-field mb-2"
+            placeholder="새 비밀번호"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+            disabled={loading}
           />
-          
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>새 비밀번호 확인</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        </div>
+        
+        <div className="space-y-1">
+          <label className="block text-sm text-gray-700">새 비밀번호 확인</label>
+          <input
+            type="password"
+            className="input-field mb-2"
+            placeholder="새 비밀번호 확인"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            disabled={loading}
           />
-          
-          <div className="flex space-x-2 pt-4">
-            <Button
-              type="button"
-              onClick={onCancel}
-              variant="outline"
-              className="flex-1"
-            >
-              취소
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="flex-1"
-            >
-              {loading ? '처리 중...' : '변경'}
-            </Button>
-          </div>
-        </form>
-      </Form>
+        </div>
+        
+        <div className="flex space-x-4 pt-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 py-3 border border-gray-300 rounded-md"
+            disabled={loading}
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            className="flex-1 bg-primary text-white py-3 rounded-md"
+            disabled={!currentPassword || !newPassword || !confirmPassword || loading}
+          >
+            {loading ? '변경 중...' : '변경하기'}
+          </button>
+        </div>
+      </form>
     </FormContainer>
   );
 };

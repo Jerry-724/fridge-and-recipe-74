@@ -38,13 +38,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
   
   return (
     <div className="w-full max-w-md px-6 animate-slide-down">
-      <h2 className="text-2xl font-medium text-center text-gray-800 mb-8">뭐먹을냉?</h2>
+      <h2 className="text-2xl font-medium text-center mb-6" style={{ color: '#70B873' }}>뭐먹을냉?</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <input
             type="text"
-            className="input-field"
+            className="input-field mb-2"
             placeholder="아이디"
             value={login_id}
             onChange={(e) => setLoginId(e.target.value)}
@@ -55,7 +55,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
         <div>
           <input
             type="password"
-            className="input-field"
+            className="input-field mb-2"
             placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -65,14 +65,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleSignup }) => {
         
         <button
           type="submit"
-          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors"
+          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors mt-2"
           disabled={isLoading}
         >
           {isLoading ? '로그인 중...' : '로그인'}
         </button>
       </form>
       
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <button
           onClick={onToggleSignup}
           className="text-primary hover:text-primary-dark transition-colors"

@@ -64,7 +64,7 @@ const MyPageForm = () => {
         throw new Error('비밀번호가 일치하지 않습니다.');
       }
       
-      // Update password
+      // Update password - Using correct property name 'password' instead of 'newPassword'
       await updateUser({ password: newPassword });
       
       // Show success toast

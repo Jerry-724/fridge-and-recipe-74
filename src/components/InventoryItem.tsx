@@ -79,7 +79,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
         {getFoodEmoji(item.item_name)}
       </div>
       
-      <div className="text-sm font-medium">{item.item_name}</div>
+      <div className="text-sm font-bold">{item.item_name}</div>
       
       <div className={`text-xs mt-1 ${
         isExpiringSoon ? 'text-destructive' : 'text-gray-500'

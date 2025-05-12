@@ -9,7 +9,7 @@ interface FormContainerProps {
 
 const FormContainer: React.FC<FormContainerProps> = ({ title, children }) => {
   return (
-    <Card className="w-full">
+    <Card className="w-full mt-4">
       {title && (
         <CardHeader>
           <CardTitle>{title}</CardTitle>

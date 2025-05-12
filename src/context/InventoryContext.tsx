@@ -34,7 +34,7 @@ const MOCK_CATEGORIES: Category[] = [
   { category_id: 7, category_major_name: '동물성', category_sub_name: '육류' },
   { category_id: 8, category_major_name: '동물성', category_sub_name: '알류' },
   { category_id: 9, category_major_name: '동물성', category_sub_name: '유제품' },
-  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' }, // Changed from '어패류·해산물' to '해산물' for consistency
+  { category_id: 10, category_major_name: '동물성', category_sub_name: '해산물' }, // Renamed from '어패류·해산물' to just '해산물'
   
   // 가공식품
   { category_id: 11, category_major_name: '가공식품', category_sub_name: '가공식품' },
@@ -193,7 +193,9 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setItems(prevItems => [...prevItems, mockItem]);
       
       // Show notification
-      toast("식품이 추가되었습니다.");
+      toast("식품이 추가되었습니다.", {
+        duration: 1000,
+      });
     } catch (error) {
       console.error('Error adding item:', error);
       toast("아이템 추가에 실패했습니다.", {
@@ -221,7 +223,9 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       );
       
       // Show notification
-      toast("변경되었습니다.");
+      toast("변경되었습니다.", {
+        duration: 1000,
+      });
     } catch (error) {
       console.error('Error updating item:', error);
       toast("아이템 업데이트에 실패했습니다.", {
@@ -249,7 +253,9 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setSelectionMode(false);
       
       // Show notification
-      toast(`${itemIds.length}개 항목이 삭제되었습니다.`);
+      toast(`${itemIds.length}개 항목이 삭제되었습니다.`, {
+        duration: 1000,
+      });
     } catch (error) {
       console.error('Error deleting items:', error);
       toast("아이템 삭제에 실패했습니다.", {

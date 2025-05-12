@@ -68,7 +68,7 @@
   
   /* Input field styling */
   .input-field {
-    @apply w-full border border-gray-300 rounded-md px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    @apply w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
   }
 
   /* Button styling */
@@ -94,5 +94,14 @@
       transform: translateY(0);
       opacity: 1;
     }
+  }
+
+  /* Hide scrollbar for chatbot when not needed */
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

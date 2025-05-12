@@ -1,21 +1,8 @@
 
-import React from 'react';
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import FormContainer from './FormContainer';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { AlertCircle } from "lucide-react";
+import React, { useState } from 'react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import FormContainer from './FormContainer';
 
 interface DeleteAccountProps {
   onCancel: () => void;
@@ -23,67 +10,58 @@ interface DeleteAccountProps {
   loading: boolean;
 }
 
-const formSchema = z.object({
-  password: z.string().min(1, "비밀번호를 입력해주세요"),
-});
-
 const DeleteAccount: React.FC<DeleteAccountProps> = ({ onCancel, onDelete, loading }) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      password: "",
-    },
-  });
-
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    await onDelete(values.password);
+  const [password, setPassword] = useState('');
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onDelete(password);
   };
-
+  
   return (
-    <FormContainer title="계정 탈퇴">
-      <Alert variant="destructive" className="mb-4">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+    <FormContainer>
+      <Alert className="border-red-500 bg-red-50 mb-4">
+        <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+        <AlertDescription className="text-red-500 font-medium text-base">
+          계정을 삭제하면 모든 데이터가 영구적으로 제거됩니다.
         </AlertDescription>
       </Alert>
       
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>비밀번호 확인</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm text-gray-700 mb-1">비밀번호 확인</label>
+          <input
+            type="password"
+            className="input-field"
+            placeholder="현재 비밀번호"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={loading}
           />
-          
-          <div className="flex space-x-2 pt-4">
-            <Button
-              type="button"
-              onClick={onCancel}
-              variant="outline"
-              className="flex-1"
-            >
-              취소
-            </Button>
-            <Button
-              type="submit"
-              variant="destructive"
-              disabled={loading}
-              className="flex-1"
-            >
-              {loading ? '처리 중...' : '탈퇴'}
-            </Button>
-          </div>
-        </form>
-      </Form>
+          <p className="mt-1 text-xs text-gray-500">
+            계정을 삭제하려면 비밀번호를 입력하세요.
+          </p>
+        </div>
+        
+        <div className="flex space-x-4 pt-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 py-3 border border-gray-300 rounded-md"
+            disabled={loading}
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            className="flex-1 bg-red-500 text-white py-3 rounded-md"
+            disabled={!password || loading}
+          >
+            {loading ? '처리 중...' : '탈퇴하기'}
+          </button>
+        </div>
+      </form>
     </FormContainer>
   );
 };
