@@ -46,12 +46,6 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({
     setIsOpen(false);
     setSelectionMode(true);
   };
-
-  const handleConfirmDelete = () => {
-    if (selectedItems.length > 0) {
-      onOpenDeleteConfirmation();
-    }
-  };
   
   return (
     <div ref={dropdownRef} className="fixed bottom-20 right-5 z-20">
@@ -75,25 +69,17 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({
               className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
               onClick={handleAddItems}
             >
-              재고 추가+
+              + 재고 추가
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
               onClick={handleDeleteItems}
             >
-              재고 삭제-
+              – 재고 삭제
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (
-        <Button 
-          className="bg-destructive hover:bg-destructive/80 text-white font-bold px-4 py-2 rounded flex items-center gap-2"
-          onClick={handleConfirmDelete}
-        >
-          <Trash2Icon size={18} />
-          삭제
-        </Button>
-      )}
+      ) : null}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
+import { Trash2Icon } from 'lucide-react';
 import CategoryBar from '../components/CategoryBar';
 import InventoryList from '../components/InventoryList';
 import AddItemButton from '../components/AddItemButton';
@@ -31,9 +32,15 @@ const InventoryPage: React.FC = () => {
     setSelectionMode(false);
     clearSelectedItems();
   };
+
+  const handleConfirmDelete = () => {
+    if (selectedItems.length > 0) {
+      setShowDeleteConfirmation(true);
+    }
+  };
   
   return (
-    <div className="h-full flex flex-col bg-[#FFFFF8]">
+    <div className="h-full flex flex-col bg-[#FFFFF0]">
       <CategoryBar />
       
       <div className="flex-1 overflow-hidden">
@@ -58,10 +65,11 @@ const InventoryPage: React.FC = () => {
 
       {isSelectionMode && selectedItems.length > 0 && (
         <div 
-          className="absolute bottom-24 left-0 right-0 flex justify-center"
-          onClick={() => setShowDeleteConfirmation(true)}
+          className="absolute bottom-24 left-0 right-0 flex justify-center z-20"
+          onClick={handleConfirmDelete}
         >
           <button className="bg-destructive text-white py-2 px-6 rounded-full flex items-center">
+            <Trash2Icon size={18} className="mr-1" />
             <span className="font-bold">{selectedItems.length}개 삭제</span>
           </button>
         </div>

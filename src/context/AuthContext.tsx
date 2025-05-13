@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { User, AuthResponse } from '../types/api';
+import axios from 'axios'
 
 interface AuthContextType {
   user: User | null;
@@ -42,20 +43,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock response - in a real app this would come from your API
-      const mockResponse: AuthResponse = {
-        user: {
-          login_id,
-          username: "사용자", // Default username
-          notification: true,
-        },
-        token: "mock-jwt-token"
-      };
+      const response = await axios.post('http://localhost:8000/user/login', {
+        login_id,
+        password
+      });
+
+      const data = response.data;
+
+      const user = {
+        user_id: data.user_id,
+        login_id: data.login_id,
+        username: data.username,
+        notification: true,
+      }
       
-      localStorage.setItem('token', mockResponse.token);
-      localStorage.setItem('user', JSON.stringify(mockResponse.user));
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(user));
       
-      setUser(mockResponse.user);
+      setUser(user);
       setIsAuthenticated(true);
       
     } catch (error) {

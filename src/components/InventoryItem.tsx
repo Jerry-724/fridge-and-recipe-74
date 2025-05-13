@@ -53,8 +53,9 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   
   return (
     <div
-      className={`relative flex flex-col items-center p-3 
-      ${isExpiringSoon ? 'border-2 border-destructive rounded-lg' : ''}`}
+      className={`relative flex flex-col items-center p-3 border-2 border-primary rounded-lg ${
+        isExpiringSoon ? 'border-destructive' : ''
+      }`}
       onClick={handleClick}
     >
       {isSelectionMode && (
@@ -73,21 +74,15 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
         </div>
       )}
       
-      <div 
-        className={`text-3xl mb-2 ${
-          isExpiringSoon ? 'text-destructive' : ''
-        } relative`}
-      >
+      <div className="text-3xl mb-2">
         {getFoodEmoji(item.item_name)}
-        {isExpired && <div className="expired-overlay"></div>}
       </div>
       
-      <div className="text-sm font-bold relative">
+      <div className="text-sm font-bold">
         {item.item_name}
-        {isExpired && <div className="absolute inset-0 opacity-0"></div>}
       </div>
       
-      <div className={`text-xs mt-1 relative ${
+      <div className={`text-xs mt-1 ${
         isExpiringSoon || isExpired ? 'text-destructive' : 'text-gray-500'
       }`}>
         {item.daysLeft !== undefined
@@ -95,10 +90,9 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
             ? '유통기한 지남'
             : `${item.daysLeft}일 남음`
           : '날짜 정보 없음'}
-        {isExpired && <div className="absolute inset-0 opacity-0"></div>}
       </div>
       
-      {/* Updated overlay for expired items that covers the entire component */}
+      {/* Single overlay for expired items that covers the entire component */}
       {isExpired && (
         <div className="absolute inset-0 bg-black/30 rounded-lg pointer-events-none"></div>
       )}
