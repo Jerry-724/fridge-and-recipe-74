@@ -48,7 +48,7 @@ const CategoryBar: React.FC = () => {
   
   return (
     <div 
-      className="grid grid-cols-5 py-4 px-1 bg-white sticky top-0 z-10"
+      className="grid grid-cols-5 py-4 px-1 bg-[#FFFFF8] sticky top-0 z-10"
     >
       {majorCategories.map((categoryName, index) => {
         const isSelected = selectedCategoryId !== null && 
