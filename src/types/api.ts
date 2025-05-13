@@ -1,6 +1,7 @@
 
 // User model
 export interface User {
+  user_id: number;
   login_id: string;
   username: string;
   password?: string;  // Not returned from API

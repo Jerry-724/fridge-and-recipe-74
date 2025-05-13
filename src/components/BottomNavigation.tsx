@@ -2,9 +2,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FileText, Refrigerator, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const BottomNavigation: React.FC = () => {
   const location = useLocation();
+  const { user } = useAuth();
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -33,9 +35,9 @@ const BottomNavigation: React.FC = () => {
       </Link>
       
       <Link
-        to="/mypage"
+        to={`/${user.user_id}/mypage`}
         className={`flex flex-col items-center w-1/3 ${
-          isActive('/mypage') ? 'text-primary' : 'text-gray-500'
+            isActive(`/${user.user_id}/mypage`) ? 'text-primary' : 'text-gray-500'
         }`}
       >
         <User size={22} />
