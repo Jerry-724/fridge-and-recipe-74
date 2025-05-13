@@ -33,7 +33,7 @@ const InventoryPage: React.FC = () => {
   };
   
   return (
-    <div className="h-full flex flex-col bg-[#FFFFF8]">
+    <div className="h-full flex flex-col bg-[#FFFFF0]">
       <CategoryBar />
       
       <div className="flex-1 overflow-hidden">
