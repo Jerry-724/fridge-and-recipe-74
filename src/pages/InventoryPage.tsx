@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
+import { Trash2Icon } from 'lucide-react';
 import CategoryBar from '../components/CategoryBar';
 import InventoryList from '../components/InventoryList';
 import AddItemButton from '../components/AddItemButton';
