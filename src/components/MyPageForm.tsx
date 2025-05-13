@@ -35,10 +35,6 @@ const MyPageForm = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (currentPassword !== '1234') { // Mock password check
-        throw new Error('비밀번호가 일치하지 않습니다.');
-      }
-      
       // Update nickname
       await updateUser({ username: newNickname });
       
@@ -67,11 +63,7 @@ const MyPageForm = () => {
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (currentPassword !== '1234') { // Mock password check
-        throw new Error('비밀번호가 일치하지 않습니다.');
-      }
-      
+
       // Update password
       await updateUser({ password: newPassword });
       
@@ -95,10 +87,6 @@ const MyPageForm = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (password !== '1234') { // Mock password check
-        throw new Error('비밀번호가 일치하지 않습니다.');
-      }
       
       // Delete account - passing the current password to the function
       await deleteAccount(password);

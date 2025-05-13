@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   useEffect(() => {
     // Check for token in localStorage
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     const savedUser = localStorage.getItem('user');
     
     if (token && savedUser) {
@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         notification: true,
       }
       
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(user));
       
       setUser(user);
@@ -144,9 +144,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, send the delete request to your API
-      // For now, just clear local storage and state
+
+      const user_id = Number(user.user_id);
+
+      const response = await axios.delete(`http://localhost:8000/user/${user_id}/delete`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        data: {
+          password: password
+        }
+      })
+
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setUser(null);
