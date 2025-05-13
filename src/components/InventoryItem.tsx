@@ -53,8 +53,9 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   
   return (
     <div
-      className={`relative flex flex-col items-center p-3 
-      ${isExpiringSoon ? 'border-2 border-destructive rounded-lg' : ''}`}
+      className={`relative flex flex-col items-center p-3 border-2 border-primary rounded-lg ${
+        isExpiringSoon ? 'border-destructive' : ''
+      }`}
       onClick={handleClick}
     >
       {isSelectionMode && (
