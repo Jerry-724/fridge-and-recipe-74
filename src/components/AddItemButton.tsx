@@ -75,13 +75,13 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({
               className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
               onClick={handleAddItems}
             >
-              재고 추가+
+              + 재고 추가
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
               onClick={handleDeleteItems}
             >
-              재고 삭제-
+              – 재고 삭제
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
