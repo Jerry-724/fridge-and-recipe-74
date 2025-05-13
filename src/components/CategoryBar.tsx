@@ -11,7 +11,6 @@ import {
 
 const CategoryBar: React.FC = () => {
   const { categories, selectedCategoryId, setSelectedCategoryId } = useInventory();
-  const scrollRef = useRef<HTMLDivElement>(null);
   
   // Get unique major categories
   const majorCategories = [
@@ -49,8 +48,7 @@ const CategoryBar: React.FC = () => {
   
   return (
     <div 
-      ref={scrollRef}
-      className="flex overflow-x-auto py-4 px-2 bg-[#FFFFF8] sticky top-0 z-10 scrollbar-none"
+      className="grid grid-cols-5 py-4 px-1 bg-[#FFFFF8] sticky top-0 z-10"
     >
       {majorCategories.map((categoryName, index) => {
         const isSelected = selectedCategoryId !== null && 
@@ -61,11 +59,11 @@ const CategoryBar: React.FC = () => {
         return (
           <div 
             key={index}
-            className={`flex flex-col items-center min-w-[70px] mx-1 relative`}
+            className={`flex flex-col items-center justify-center relative`}
             onClick={() => handleCategoryClick(categoryName)}
           >
             <div className="mb-1 p-2">
-              <IconComponent size={36} color="#70B873" />
+              <IconComponent size={32} color="#70B873" />
             </div>
             <span className="text-xs text-center w-full truncate font-bold text-gray-700">
               {categoryName}
