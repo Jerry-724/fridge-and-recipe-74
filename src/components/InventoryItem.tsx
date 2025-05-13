@@ -37,7 +37,9 @@ const getFoodEmoji = (itemName: string): string => {
 const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   const { isSelectionMode, selectedItems, selectItem, deselectItem } = useInventory();
   const isSelected = selectedItems.includes(item.item_id);
-  const isExpiringSoon = (item.daysLeft !== undefined && item.daysLeft <= 3);
+  
+  const isExpiringSoon = (item.daysLeft !== undefined && item.daysLeft <= 3 && item.daysLeft > 0);
+  const isExpired = (item.daysLeft !== undefined && item.daysLeft <= 0);
   
   const handleClick = () => {
     if (isSelectionMode) {
@@ -74,18 +76,21 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
       <div 
         className={`text-3xl mb-2 ${
           isExpiringSoon ? 'text-destructive' : ''
-        }`}
+        } relative`}
       >
         {getFoodEmoji(item.item_name)}
+        {isExpired && <div className="expired-overlay"></div>}
       </div>
       
       <div className="text-sm font-bold">{item.item_name}</div>
       
       <div className={`text-xs mt-1 ${
-        isExpiringSoon ? 'text-destructive' : 'text-gray-500'
+        isExpiringSoon || isExpired ? 'text-destructive' : 'text-gray-500'
       }`}>
         {item.daysLeft !== undefined
-          ? `${item.daysLeft}일 남음`
+          ? item.daysLeft <= 0 
+            ? '유통기한 지남'
+            : `${item.daysLeft}일 남음`
           : '날짜 정보 없음'}
       </div>
     </div>

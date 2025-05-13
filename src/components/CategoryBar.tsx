@@ -4,7 +4,7 @@ import { useInventory } from '../context/InventoryContext';
 import { 
   Beef, 
   Carrot, 
-  Archive, 
+  Archive,
   Cookie,
   Utensils
 } from 'lucide-react';
@@ -27,7 +27,7 @@ const CategoryBar: React.FC = () => {
     '동물성': Beef,
     '식물성': Carrot,
     '가공식품': Archive,
-    '조미료·양념': Utensils, // Changed from Beef to Utensils for seasoning
+    '조미료·양념': Utensils,
     '기타': Cookie,
   };
   
@@ -50,7 +50,7 @@ const CategoryBar: React.FC = () => {
   return (
     <div 
       ref={scrollRef}
-      className="flex overflow-x-auto py-4 px-2 bg-white sticky top-0 z-10 scrollbar-none"
+      className="flex overflow-x-auto py-4 px-2 bg-[#FFFFF8] sticky top-0 z-10 scrollbar-none"
     >
       {majorCategories.map((categoryName, index) => {
         const isSelected = selectedCategoryId !== null && 
@@ -61,21 +61,18 @@ const CategoryBar: React.FC = () => {
         return (
           <div 
             key={index}
-            className={`flex flex-col items-center min-w-[70px] mx-1 ${
-              isSelected ? 'text-white' : 'text-[#70B873]'
-            }`}
+            className={`flex flex-col items-center min-w-[70px] mx-1 relative`}
             onClick={() => handleCategoryClick(categoryName)}
           >
-            <div className={`mb-1 p-2 rounded-lg ${
-              isSelected ? 'bg-[#70B873]' : 'bg-transparent'
-            }`}>
-              <IconComponent size={36} color={isSelected ? "#FFFFFF" : "#70B873"} />
+            <div className="mb-1 p-2">
+              <IconComponent size={36} color="#70B873" />
             </div>
-            <span className={`text-xs text-center w-full truncate font-bold ${
-              isSelected ? 'text-[#70B873]' : 'text-gray-700'
-            }`}>
+            <span className="text-xs text-center w-full truncate font-bold text-gray-700">
               {categoryName}
             </span>
+            {isSelected && (
+              <div className="absolute bottom-[-6px] left-0 w-full h-1 bg-[#70B873] rounded-full"></div>
+            )}
           </div>
         );
       })}

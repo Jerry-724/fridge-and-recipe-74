@@ -8,7 +8,6 @@ const RecipeChatbot: React.FC = () => {
   const { messages, isLoading, sendMessage } = useRecipe();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [showScrollbar, setShowScrollbar] = useState<boolean>(false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,30 +22,13 @@ const RecipeChatbot: React.FC = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // Check if scrollbar should be shown
-  useEffect(() => {
-    const checkScrollOverflow = () => {
-      if (scrollContainerRef.current) {
-        const { scrollHeight, clientHeight } = scrollContainerRef.current;
-        setShowScrollbar(scrollHeight > clientHeight);
-      }
-    };
-
-    checkScrollOverflow();
-    window.addEventListener('resize', checkScrollOverflow);
-    
-    return () => {
-      window.removeEventListener('resize', checkScrollOverflow);
-    };
-  }, [messages]);
   
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] bg-[#FFFFF0]">
+    <div className="flex flex-col h-[calc(100vh-80px)] bg-[#FFFFF8]">
       {/* Chat messages */}
       <div 
         ref={scrollContainerRef}
-        className={`flex-1 overflow-y-auto p-4 space-y-4 ${showScrollbar ? '' : 'scrollbar-none'}`}
+        className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-none touch-pan-y"
       >
         {messages.map((message) => (
           <div
@@ -56,7 +38,7 @@ const RecipeChatbot: React.FC = () => {
             <div
               className={`max-w-[80%] rounded-lg px-4 py-2 ${
                 message.isUser
-                  ? 'bg-[#70B873] text-white rounded-tr-none'
+                  ? 'bg-[#F1F1F1] text-gray-800 rounded-tr-none'
                   : 'bg-[#9ed6a0] text-gray-800 rounded-tl-none'
               }`}
             >
@@ -78,10 +60,10 @@ const RecipeChatbot: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      {/* Input form - updated design */}
+      {/* Input form with visual separation */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white border-t border-gray-200 p-3 flex items-center gap-2"
+        className="bg-white border-t border-gray-200 p-3 flex items-center gap-2 shadow-md"
       >
         <div className="flex items-center w-full bg-gray-100 rounded-full px-4">
           <input

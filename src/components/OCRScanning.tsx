@@ -70,10 +70,11 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
   
   const handleSaveItems = async () => {
     try {
-      // Add all items to inventory
+      // Add each item individually to inventory
       for (const item of recognizedItems) {
+        // Make sure each field is stored as a separate value
         await addItem({
-          item_name: item.item_name,
+          item_name: item.item_name.trim(),
           expiry_date: item.expiry_date,
           category_id: item.category_id,
         });
@@ -253,7 +254,7 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
   };
   
   return (
-    <div className="fixed inset-0 bg-white z-50">
+    <div className="fixed inset-0 bg-[#FFFFF8] z-50">
       <div className="flex justify-between items-center p-4 border-b">
         <h1 className="text-lg font-medium">식품 추가</h1>
         <button onClick={onClose} className="text-gray-500">
