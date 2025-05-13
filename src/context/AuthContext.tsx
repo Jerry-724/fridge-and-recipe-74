@@ -77,13 +77,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const response = await axios.post('http://localhost:8000/user/create', {
+        login_id,
+        username,
+        password1: password,
+        password2: password
+      })
+
+      if (response.status === 204) {
+        return;
+      } else {
+        throw new Error('회원가입 요청이 실패했습니다.');
+      }
       
-      // Mock signup success - in a real app this would be your API call
-      // After successful signup, the user would need to log in manually
-      
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Signup failed:', error);
-      throw new Error('회원가입에 실패했습니다. 다시 시도해주세요.');
+
+      // error가 AxiosError인지 확인
+      if (axios.isAxiosError(error)) {
+        const detail = error.response?.data?.detail;
+        if (detail) {
+          throw new Error(detail);
+        }
+      }
+
+      // 일반적인 에러 처리
+      throw new Error('회원가입에 실패했습니다.')
     } finally {
       setIsLoading(false);
     }
