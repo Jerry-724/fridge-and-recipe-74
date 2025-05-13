@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
 import { useToast } from '@/hooks/use-toast';
@@ -70,9 +69,8 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
   
   const handleSaveItems = async () => {
     try {
-      // Add each item individually to inventory
+      // Process each item individually to ensure separate database entries
       for (const item of recognizedItems) {
-        // Make sure each field is stored as a separate value
         await addItem({
           item_name: item.item_name.trim(),
           expiry_date: item.expiry_date,
@@ -113,7 +111,7 @@ const OCRScanning: React.FC<OCRScanningProps> = ({ onClose }) => {
         return (
           <div className="flex flex-col items-center justify-center p-8">
             <div className="text-6xl mb-4">📸</div>
-            <h2 className="text-xl font-medium mb-6">이미지 업로드</h2>
+            <h2 className="text-xl font-medium mb-6">이��지 업로드</h2>
             <div className="w-full space-y-4">
               <button
                 onClick={() => document.getElementById('camera-input')?.click()}
