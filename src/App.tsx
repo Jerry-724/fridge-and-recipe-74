@@ -41,7 +41,7 @@ const App = () => {
                   <Route element={<AuthLayout />}>
                     <Route path="/inventory" element={<InventoryPage />} />
                     <Route path="/recipe" element={<RecipePage />} />
-                    <Route path="/mypage" element={<MyPage />} />
+                    <Route path="/:user_id/mypage" element={<MyPage />} />
                   </Route>
 
                   {/* Catch-all route */}
