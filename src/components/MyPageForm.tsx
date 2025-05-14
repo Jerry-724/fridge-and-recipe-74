@@ -15,6 +15,7 @@ import {
 import EditNickname from './mypage/EditNickname';
 import EditPassword from './mypage/EditPassword';
 import DeleteAccount from './mypage/DeleteAccount';
+import axios from "axios";
 
 type FormMode = 'view' | 'editNickname' | 'editPassword' | 'deleteAccount';
 
@@ -23,6 +24,7 @@ const MyPageForm = () => {
   const [loading, setLoading] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user, updateUser, deleteAccount, logout } = useAuth();
+  const [userData, setUserData] = useState<any>(null);
 
   const resetForm = () => {
     setMode('view');
@@ -30,21 +32,25 @@ const MyPageForm = () => {
 
   const handleSubmitNickname = async (currentPassword: string, newNickname: string) => {
     setLoading(true);
-    
+
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (currentPassword !== '1234') { // Mock password check
-        throw new Error('비밀번호가 일치하지 않습니다.');
-      }
-      
-      // Update nickname
-      await updateUser({ username: newNickname });
-      
+      const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/username`, {
+        password: currentPassword,
+        new_username: newNickname
+      });
+
+      const updatedUserData = await axios.get(`http://localhost:8000/${user.user_id}/mypage`);
+      localStorage.setItem("user", JSON.stringify((updatedUserData.data)));
+
+      await updateUser(updatedUserData.data);
+      setUserData(updatedUserData.data);
+
       // Show success toast
-      toast("변경되었습니다.", { duration: 1000 });
-      
+      toast(response.data.message, { duration: 1000 });
+
       resetForm();
     } catch (error: any) {
       console.error(error);
@@ -67,11 +73,7 @@ const MyPageForm = () => {
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (currentPassword !== '1234') { // Mock password check
-        throw new Error('비밀번호가 일치하지 않습니다.');
-      }
-      
+
       // Update password
       await updateUser({ password: newPassword });
       
@@ -95,10 +97,6 @@ const MyPageForm = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (password !== '1234') { // Mock password check
-        throw new Error('비밀번호가 일치하지 않습니다.');
-      }
       
       // Delete account - passing the current password to the function
       await deleteAccount(password);
