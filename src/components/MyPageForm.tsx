@@ -74,12 +74,21 @@ const MyPageForm = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Update password
-      await updateUser({ password: newPassword });
-      
-      // Show success toast
-      toast("변경되었습니다.", { duration: 1000 });
-      
+      const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/password`, {
+        password: currentPassword,
+        new_password: newPassword
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      toast(response.data.message || "비밀번호가 성공적으로 변경되었습니다.", { duration: 1000 });
+
+      // 로그아웃 유도
+      await logout();
+
+      toast("변경된 비밀번호로 다시 로그인해주세요.", { duration: 1000 });
       resetForm();
     } catch (error: any) {
       console.error(error);
