@@ -39,9 +39,9 @@ const App = () => {
 
                   {/* Protected routes */}
                   <Route element={<AuthLayout />}>
-                    <Route path="/inventory" element={<InventoryPage />} />
+                    <Route path="/item/:user_id" element={<InventoryPage />} />
                     <Route path="/recipe" element={<RecipePage />} />
-                    <Route path="/:user_id/mypage" element={<MyPage />} />
+                    <Route path="/mypage/:user_id" element={<MyPage />} />
                   </Route>
 
                   {/* Catch-all route */}
