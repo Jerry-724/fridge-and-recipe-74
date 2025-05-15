@@ -17,7 +17,7 @@ export function useInventory() {
       setCategories(catRes.data);
 
       // 2) 재고
-      const itemRes = await apiClient.get<Item[]>('/users/' + user.user_id + '/item/items');
+      const itemRes = await apiClient.get<Item[]>(`/users/${user.user_id}/item/items`);
       setItems(itemRes.data);
     })();
   }, [isAuthenticated]);

@@ -1,4 +1,4 @@
-
+// src/App.tsx
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -34,17 +34,18 @@ const App = () => {
               <Sonner position="top-center" closeButton toastOptions={{ duration: 1000 }} />
               <BrowserRouter>
                 <Routes>
-                  {/* Public routes */}
+                  {/* Public */}
                   <Route path="/" element={<AuthPage />} />
 
-                  {/* Protected routes */}
+                  {/* Protected */}
                   <Route element={<AuthLayout />}>
+                    {/* ★ URL 패턴을 /item/:user_id 로 두세요 */}
                     <Route path="/item/:user_id" element={<InventoryPage />} />
                     <Route path="/recipe" element={<RecipePage />} />
                     <Route path="/mypage/:user_id" element={<MyPage />} />
                   </Route>
 
-                  {/* Catch-all route */}
+                  {/* Catch-all */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
