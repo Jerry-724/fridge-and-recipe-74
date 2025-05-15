@@ -1,3 +1,4 @@
+// src/types/api.ts
 
 // User model
 export interface User {
@@ -32,4 +33,29 @@ export interface Category {
 export interface AuthResponse {
   user: User;
   token: string;
+}
+
+// ---------------------------
+// OCR 관련 API 응답 타입
+// ---------------------------
+
+// 1) OCR 이미지에서 이름 추출
+export interface OCRExtractResponse {
+  extracted_names: string[];
+}
+
+// 2) OCR로 추출된 이름들을 분류 + 유통기한 텍스트 변환
+export interface OCRClassifyItem {
+  item_name: string;
+  category_major_name: string;
+  category_sub_name: string;
+  expiry_text: string;
+}
+export interface OCRClassifyResponse {
+  items: OCRClassifyItem[];
+}
+
+// 3) OCR로 확인된 항목을 저장했을 때 반환되는 ID 목록
+export interface OCRSaveResponse {
+  saved_items: number[];
 }
