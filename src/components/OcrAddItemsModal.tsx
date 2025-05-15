@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useOcr } from '../hooks/use-ocr';
 import { useInventory } from '../context/InventoryContext';
-import { useAuth }      from '../context/AuthContext';      
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../hooks/use-toast';
 import { X } from 'lucide-react';
 
@@ -20,7 +20,7 @@ interface PreviewItem {
 export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
   const { extractNames, classifyNames, saveItems } = useOcr();
   const { categories, refreshInventory } = useInventory();
-  const { user }                    = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const [stage, setStage] = useState<'upload' | 'scanning' | 'confirmation'>('upload');
@@ -58,7 +58,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
           // expiry_date 계산
           let expiry_date = '';
           if (it.expiry_text !== '무기한') {
-            const days = parseInt(it.expiry_text.replace(/\D/g, '')) || 0;
+            const days = parseInt(it.expiry_text.replace(/\D/g, ''), 10) || 0;
             const d = new Date();
             d.setDate(d.getDate() + days);
             expiry_date = d.toISOString().slice(0, 10);
@@ -72,7 +72,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             item_name:   it.item_name,
             expiry_date,
             expiry_text: it.expiry_text,
-            category_id: cat ? cat.category_id : categories[0]?.category_id || 0,
+            category_id: cat ? cat.category_id : (categories[0]?.category_id || 0),
           };
         });
 
@@ -113,7 +113,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     );
   };
 
-  // 4) 저장 → 백엔드에 expiry_text와 카테고리 이름을 함께 전송
+  // 4) 저장 → 백엔드에 expiry_text 대신 수동 고친 expiry_date를 보내기
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -125,11 +125,12 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
           category_major_name: cat.category_major_name,
           category_sub_name:   cat.category_sub_name,
           expiry_text:         it.expiry_text,
+          expiry_date:         it.expiry_date || null,    // <-- send the ISO date (or null)
         };
       });
       await saveItems({
-        user_id: user.user_id,        // useAuth() 에서 꺼낸 현재 로그인 유저 ID
-        items:   itemsPayload
+        user_id: user!.user_id,
+        items:   itemsPayload,
       });
       toast({ title: '완료', description: `${previewItems.length}개 추가되었습니다.` });
       onClose();
@@ -178,7 +179,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
                 setPreviewItems([{
                   item_name:   '',
                   expiry_date: '',
-                  expiry_text:'무기한',
+                  expiry_text: '무기한',
                   category_id: categories[0]?.category_id || 0,
                 }]);
                 setStage('confirmation');
@@ -256,7 +257,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
                   {
                     item_name:   '',
                     expiry_date: '',
-                    expiry_text:'무기한',
+                    expiry_text: '무기한',
                     category_id: categories[0]?.category_id || 0,
                   },
                 ])
