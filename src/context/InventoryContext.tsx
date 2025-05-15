@@ -13,14 +13,23 @@ interface InventoryContextType {
   items: (Item & { daysLeft: number | null })[];
   categories: Category[];
   isLoading: boolean;
+
+  // **대분류 선택 상태**
+  selectedMajor: string | null;
+  setSelectedMajor: (name: string | null) => void;
+
+  // **소분류 선택 상태**
   selectedCategoryId: number | null;
   setSelectedCategoryId: (id: number | null) => void;
+
   selectedItems: number[];
   selectItem: (id: number) => void;
   deselectItem: (id: number) => void;
   clearSelectedItems: () => void;
+
   isSelectionMode: boolean;
   setSelectionMode: (mode: boolean) => void;
+
   refreshInventory: () => Promise<void>;
 }
 
@@ -31,35 +40,29 @@ const InventoryContext = createContext<InventoryContextType | undefined>(
 export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [items, setItems] = useState<(Item & { daysLeft: number | null })[]>(
-    []
-  );
+  const [items, setItems] = useState<(Item & { daysLeft: number | null })[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [selectedMajor, setSelectedMajor] = useState<string | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
+
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [isSelectionMode, setSelectionMode] = useState<boolean>(false);
 
-  // useAuth에서 apiClient와 user, isAuthenticated를 가져옵니다.
   const { apiClient, user, isAuthenticated } = useAuth();
 
-  // 백엔드가 제공하는 경로에 맞춰서 호출합니다.
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      // 1) 카테고리
       const catRes = await apiClient.get<Category[]>("/category/");
       setCategories(catRes.data);
 
-      // 2) 재고 (router.prefix = "/item/{user_id}" 인걸 감안해서)
-      //    → GET /item/23/
       const itemRes = await apiClient.get<Item[]>(
-        `/item/${user.user_id}/`
+        `/item/${user?.user_id}/`
       );
-
-      // daysLeft 계산
       const withDaysLeft = itemRes.data.map((it) => {
         const expiry = it.expiry_date ? new Date(it.expiry_date) : null;
         const daysLeft = expiry
@@ -78,7 +81,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // 로그인 상태가 변할 때만 한 번만 fetchData를 호출하도록 합니다.
   useEffect(() => {
     if (isAuthenticated) {
       fetchData();
@@ -88,10 +90,9 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [isAuthenticated]);
 
-  const selectItem = (id: number) =>
-    setSelectedItems((prev) => [...prev, id]);
+  const selectItem = (id: number) => setSelectedItems((p) => [...p, id]);
   const deselectItem = (id: number) =>
-    setSelectedItems((prev) => prev.filter((x) => x !== id));
+    setSelectedItems((p) => p.filter((x) => x !== id));
   const clearSelectedItems = () => setSelectedItems([]);
 
   return (
@@ -100,14 +101,21 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         items,
         categories,
         isLoading,
+
+        selectedMajor,
+        setSelectedMajor,
+
         selectedCategoryId,
         setSelectedCategoryId,
+
         selectedItems,
         selectItem,
         deselectItem,
         clearSelectedItems,
+
         isSelectionMode,
         setSelectionMode,
+
         refreshInventory: fetchData,
       }}
     >
@@ -118,7 +126,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
 
 export const useInventory = () => {
   const ctx = useContext(InventoryContext);
-  if (!ctx)
-    throw new Error("useInventory must be used within an InventoryProvider");
+  if (!ctx) throw new Error("useInventory must be used within a provider");
   return ctx;
 };

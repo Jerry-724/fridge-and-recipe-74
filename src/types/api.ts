@@ -10,6 +10,13 @@ export interface User {
   fcm_token?: string;
 }
 
+// Category model
+export interface Category {
+  category_id: number;
+  category_major_name: string;
+  category_sub_name: string;
+}
+
 // Item model
 export interface Item {
   item_id: number;
@@ -18,15 +25,8 @@ export interface Item {
   item_name: string;
   expiry_date: string;
   created_at: string;
-
+  category: Category;
   daysLeft?: number | null; // 프론트에서 계산해 붙이는 남은 일수 (optional) 
-}
-
-// Category model
-export interface Category {
-  category_id: number;
-  category_major_name: string;
-  category_sub_name: string;
 }
 
 // Authentication response
