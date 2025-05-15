@@ -1,4 +1,3 @@
-// src/components/OcrAddItemsModal.tsx
 import React, { useState, useEffect } from 'react';
 import { useOcr } from '../hooks/use-ocr';
 import { useInventory } from '../context/InventoryContext';
@@ -25,7 +24,13 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
   const [previewItems, setPreviewItems] = useState<PreviewItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 1) 파일 고르면 scanning 단계로
+  // 모달 열리면 카테고리 무조건 새로고침
+  useEffect(() => {
+    refreshInventory().catch(() =>
+      toast({ title: '오류', description: '카테고리 불러오기 실패', variant: 'destructive' })
+    );
+  }, [refreshInventory, toast]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -36,21 +41,15 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     setStage('scanning');
   };
 
-  // 2) scanning → OCR → classify → confirmation
   useEffect(() => {
     if (stage !== 'scanning' || !file) return;
-
     (async () => {
       setLoading(true);
       try {
-        // OCR → 이름 리스트
         const names = await extractNames(file);
-        // 이름 → 분류+expiry_text
         const classified = await classifyNames(names);
 
-        // 분류된 텍스트 → date picker 형식, category_id 매핑
         const items: PreviewItem[] = classified.map((it) => {
-          // 2-1) expiry_text → yyyy-MM-dd
           let expiry_date = '';
           if (it.expiry_text !== '무기한') {
             const days = parseInt(it.expiry_text.replace(/\D/g, '')) || 0;
@@ -58,8 +57,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             d.setDate(d.getDate() + days);
             expiry_date = d.toISOString().slice(0,10);
           }
-          // 2-2) category_major+sub → category_id
-          const cat = categories.find(c =>
+          const found = categories.find(c =>
             c.category_major_name === it.category_major_name &&
             c.category_sub_name   === it.category_sub_name
           );
@@ -67,7 +65,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
           return {
             item_name: it.item_name,
             expiry_date,
-            category_id: cat ? cat.category_id : defaultId
+            category_id: found ? found.category_id : defaultId
           };
         });
 
@@ -75,7 +73,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
         setStage('confirmation');
       } catch (err) {
         console.error(err);
-        toast({ title: 'OCR 오류', description: '이미지 인식에 실패했습니다.', variant: 'destructive' });
+        toast({ title: 'OCR 오류', description: '이미지 인식 실패', variant: 'destructive' });
         onClose();
       } finally {
         setLoading(false);
@@ -83,14 +81,12 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     })();
   }, [stage, file, categories, extractNames, classifyNames, toast, onClose]);
 
-  // 3) 확인 화면에서 필드 수정
   const updateItem = (idx: number, key: keyof PreviewItem, value: any) => {
     setPreviewItems(prev =>
       prev.map((it,i) => i===idx ? { ...it, [key]: value } : it)
     );
   };
 
-  // 4) 저장 → 모달 닫고 재고 리프레시
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -107,13 +103,10 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
 
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
-      {/* 헤더 */}
       <div className="flex items-center justify-between p-4 border-b">
         <h2 className="text-lg">식품 추가</h2>
         <button onClick={onClose} className="text-gray-500">✕</button>
       </div>
-
-      {/* 콘텐츠 */}
       <div className="flex-1 overflow-auto p-4">
         {stage==='upload' && (
           <div className="space-y-4 text-center">
@@ -121,9 +114,8 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             <button
               className="w-full bg-primary text-white py-3 rounded"
               onClick={()=>document.getElementById('ocr-input')?.click()}
-            >
-              이미지 선택
-            </button>
+              disabled={loading}
+            >이미지 선택</button>
             <input
               id="ocr-input"
               type="file"
@@ -134,24 +126,19 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             <button
               className="w-full border border-primary text-primary py-3 rounded"
               onClick={() => {
-                setPreviewItems([{
-                  item_name:'', expiry_date:'', category_id:categories[0]?.category_id||0
-                }]);
+                setPreviewItems([{ item_name:'', expiry_date:'', category_id:categories[0]?.category_id||0 }]);
                 setStage('confirmation');
               }}
-            >
-              직접 입력
-            </button>
+              disabled={loading}
+            >직접 입력</button>
           </div>
         )}
-
         {stage==='scanning' && (
           <div className="flex flex-col items-center py-12">
             <div className="animate-spin h-12 w-12 border-4 border-t-primary rounded-full mb-4"/>
             <span>OCR 인식 중…</span>
           </div>
         )}
-
         {stage==='confirmation' && (
           <div className="space-y-6">
             {imagePreview && (
@@ -159,10 +146,14 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             )}
             {previewItems.map((it,idx)=>(
               <div key={idx} className="border p-4 rounded relative">
-                <button className="absolute top-2 right-2" onClick={()=>updateItem(idx,'item_name','')}>
-                  <X size={18}/>
-                </button>
-                {/* 이름 */}
+                <button
+                  className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
+                  onClick={()=> {
+                    const arr = [...previewItems];
+                    arr.splice(idx,1);
+                    setPreviewItems(arr);
+                  }}
+                ><X size={18}/></button>
                 <label className="block text-sm">식품 이름</label>
                 <input
                   type="text"
@@ -170,8 +161,6 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
                   onChange={e=>updateItem(idx,'item_name',e.target.value)}
                   className="w-full border rounded p-2 mb-3"
                 />
-
-                {/* 유통기한 */}
                 <label className="block text-sm">유통기한</label>
                 <input
                   type="date"
@@ -179,13 +168,11 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
                   onChange={e=>updateItem(idx,'expiry_date',e.target.value)}
                   className="w-full border rounded p-2 mb-3"
                 />
-
-                {/* 카테고리 */}
                 <label className="block text-sm">카테고리</label>
                 <select
                   value={it.category_id}
                   onChange={e=>updateItem(idx,'category_id',+e.target.value)}
-                  className="w-full border rounded p-2"
+                  className="w-full border rounded p-2 mb-3"
                 >
                   {categories.map(c=>(
                     <option key={c.category_id} value={c.category_id}>
@@ -195,14 +182,14 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
                 </select>
               </div>
             ))}
-
-            {/* 항목 추가 */}
             <button
               className="w-full border-dashed border-gray-300 py-2 rounded text-gray-500"
-              onClick={()=>setPreviewItems(prev=>[...prev,{item_name:'',expiry_date:'',category_id:categories[0]?.category_id||0}])}
+              onClick={()=>setPreviewItems(prev=>[
+                ...prev,
+                { item_name:'', expiry_date:'', category_id:categories[0]?.category_id||0 }
+              ])}
+              disabled={loading}
             >+ 항목 추가</button>
-
-            {/* 취소/저장 */}
             <div className="flex space-x-2">
               <button
                 className="flex-1 border py-2 rounded"

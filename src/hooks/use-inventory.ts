@@ -1,24 +1,26 @@
 // src/hooks/use-inventory.ts
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';      // useAuth 훅으로 로그인 정보 가져오기
-import type { Item } from '../types/api';
+import { useState, useEffect, useContext } from 'react';
+import { useAuth } from '../context/AuthContext';
+import type { Item, Category } from '../types/api';
 
 export function useInventory() {
-  // apiClient 와 로그인된 user 정보(user_id) 를 꺼냅니다
-  const { apiClient, user } = useAuth();
+  const { apiClient, user, isAuthenticated } = useAuth();
+  const [items, setItems] = useState<Item[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  // 재고 배열 상태
-  const [inventory, setInventory] = useState<Item[]>([]);
+  // 마운트 되거나 로그인 상태 변경 시
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    (async () => {
+      // 1) 카테고리부터 무조건 먼저
+      const catRes = await apiClient.get<Category[]>('/categories');
+      setCategories(catRes.data);
 
-  // 백엔드에서 /inventory/{user_id} 호출해서 재고를 불러옵니다
-  async function refreshInventory() {
-    if (!user) {
-      throw new Error('로그인 정보가 없습니다.');
-    }
-    // user.user_id 를 경로에 삽입
-    const res = await apiClient.get<Item[]>(`/users/${user.user_id}/item/items`);
-    setInventory(res.data);
-  }
+      // 2) 재고
+      const itemRes = await apiClient.get<Item[]>('/users/' + user.user_id + '/item/items');
+      setItems(itemRes.data);
+    })();
+  }, [isAuthenticated]);
 
-  return { inventory, refreshInventory };
+  return { items, categories };
 }
