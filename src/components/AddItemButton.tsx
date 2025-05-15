@@ -1,87 +1,54 @@
-
+// src/components/AddItemButton.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
+  DropdownMenu, DropdownMenuTrigger,
+  DropdownMenuContent, DropdownMenuItem
 } from '@/components/ui/dropdown-menu';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
+import { OcrAddItemsModal } from './OcrAddItemsModal';
 
-interface AddItemButtonProps {
-  onOpenImagePicker: () => void;
-  onOpenDeleteConfirmation: () => void;
-}
-
-const AddItemButton: React.FC<AddItemButtonProps> = ({ 
-  onOpenImagePicker, 
-  onOpenDeleteConfirmation 
-}) => {
+export default function AddItemButton() {
   const { isSelectionMode, setSelectionMode, selectedItems } = useInventory();
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  
-  // Close dropdown when clicking outside
+  const [open, setOpen] = useState(false);
+  const [ocrOpen, setOcrOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
       }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    document.addEventListener('mousedown', onClick);
+    return ()=>document.removeEventListener('mousedown', onClick);
   }, []);
-  
-  const handleAddItems = () => {
-    setIsOpen(false);
-    onOpenImagePicker();
-  };
-  
-  const handleDeleteItems = () => {
-    setIsOpen(false);
-    setSelectionMode(true);
-  };
-  
-  return (
-    <div ref={dropdownRef} className="fixed bottom-20 right-5 z-20">
-      {!isSelectionMode ? (
-        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              className="bg-[#70B873] hover:bg-[#5fa762] text-white font-bold px-4 py-2 rounded flex items-center gap-2"
-              onClick={() => setIsOpen(true)}
-            >
-              <PencilIcon size={18} />
-              편집
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent 
-            className="mt-1 border-2 border-[#70B873] p-0 rounded-md bg-white" 
-            align="end"
-            sideOffset={5}
-          >
-            <DropdownMenuItem
-              className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
-              onClick={handleAddItems}
-            >
-              + 재고 추가
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer bg-white text-[#70B873] font-bold py-2 px-4 hover:bg-gray-50"
-              onClick={handleDeleteItems}
-            >
-              – 재고 삭제
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : null}
-    </div>
-  );
-};
 
-export default AddItemButton;
+  return (
+    <>
+      <div ref={ref} className="fixed bottom-20 right-5 z-20">
+        {!isSelectionMode && (
+          <DropdownMenu open={open} onOpenChange={setOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button onClick={()=>setOpen(true)} className="bg-green-600">
+                <PencilIcon/> 편집
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={()=>{ setOpen(false); setOcrOpen(true); }}>
+                + 재고 추가
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>{ setOpen(false); setSelectionMode(true); }}>
+                – 재고 삭제
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+
+      {ocrOpen && <OcrAddItemsModal onClose={()=>setOcrOpen(false)} />}
+    </>
+  );
+}

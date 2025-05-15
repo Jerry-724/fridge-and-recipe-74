@@ -17,7 +17,8 @@ export interface Item {
   item_name: string;
   expiry_date: string;
   created_at: string;
-  daysLeft?: number; // Calculated field, not from DB
+
+  daysLeft?: number | null; // 프론트에서 계산해 붙이는 남은 일수 (optional) 
 }
 
 // Category model

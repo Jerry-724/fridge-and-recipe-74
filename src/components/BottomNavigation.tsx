@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FileText, Refrigerator, User } from 'lucide-react';
@@ -25,7 +24,7 @@ const BottomNavigation: React.FC = () => {
       </Link>
       
       <Link
-        to="/inventory"
+        to={`/item/${user.user_id}`}
         className={`flex flex-col items-center w-1/3 ${
           isActive('/inventory') ? 'text-primary' : 'text-gray-500'
         }`}
@@ -35,7 +34,7 @@ const BottomNavigation: React.FC = () => {
       </Link>
       
       <Link
-        to={`/${user.user_id}/mypage`}
+        to={`/mypage/${user.user_id}`}
         className={`flex flex-col items-center w-1/3 ${
             isActive(`/${user.user_id}/mypage`) ? 'text-primary' : 'text-gray-500'
         }`}
