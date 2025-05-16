@@ -1,10 +1,19 @@
-
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { User, AuthResponse } from '../types/api';
-import axios from 'axios'
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  ReactNode,
+} from 'react';
+import axios, { AxiosInstance } from 'axios';
+import { User } from '../types/api';
 
 interface AuthContextType {
+  apiClient: AxiosInstance;
   user: User | null;
+  user_id: number | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (login_id: string, password: string) => Promise<void>;
@@ -16,53 +25,67 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+
+  // 1) Axios 인스턴스 생성 및 토큰 자동 헤더 삽입
+  const apiClient = useMemo(() => {
+    const client = axios.create({
+      baseURL: 'http://localhost:8000',
+    });
+    client.interceptors.request.use((config) => {
+      if (token) {
+        // headers 가 undefined 라면 빈 객체로 초기화
+        (config.headers as Record<string,string>) = config.headers as Record<string,string> || {};
+        (config.headers as Record<string,string>)['Authorization'] = `Bearer ${token}`;
+      }
+      return config;
+    });
+    return client;
+  }, [token]);
+
+  // 2) 초기 로컬스토리지에서 토큰·유저 로드
   useEffect(() => {
-    // Check for token in localStorage
-    const token = localStorage.getItem('token');
+    const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
-    if (token && savedUser) {
+    if (savedToken && savedUser) {
+      setToken(savedToken);
       setUser(JSON.parse(savedUser));
       setIsAuthenticated(true);
     }
-    
     setIsLoading(false);
   }, []);
 
   const login = async (login_id: string, password: string) => {
+    setIsLoading(true);
     try {
-      // For demonstration, we'll simulate an API call
-      // In a real app, you would call your backend API
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const response = await axios.post('http://localhost:8000/user/login', {
+      const response = await apiClient.post('/user/login', {
         login_id,
-        password
+        password,
       });
-
-      const data = response.data;
-
-      const user = {
+      const data = response.data as {
+        access_token: string;
+        user_id: number;
+        login_id: string;
+        username: string;
+        notification: boolean;
+      };
+      const userObj: User = {
         user_id: data.user_id,
         login_id: data.login_id,
         username: data.username,
-        notification: true,
-      }
-      
+        notification: data.notification,
+      };
+
+      // 토큰·유저 상태 저장
       localStorage.setItem('token', data.access_token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setUser(user);
+      localStorage.setItem('user', JSON.stringify(userObj));
+      setToken(data.access_token);
+      setUser(userObj);
       setIsAuthenticated(true);
-      
     } catch (error) {
       console.error('Login failed:', error);
       throw new Error('로그인에 실패했습니다. 다시 시도해주세요.');
@@ -72,38 +95,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signup = async (login_id: string, password: string, username: string) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const response = await axios.post('http://localhost:8000/user/create', {
+      const response = await apiClient.post('/user/create', {
         login_id,
         username,
         password1: password,
-        password2: password
-      })
-
-      if (response.status === 204) {
-        return;
-      } else {
+        password2: password,
+      });
+      if (response.status !== 204) {
         throw new Error('회원가입 요청이 실패했습니다.');
       }
-      
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Signup failed:', error);
-
-      // error가 AxiosError인지 확인
-      if (axios.isAxiosError(error)) {
-        const detail = error.response?.data?.detail;
-        if (detail) {
-          throw new Error(detail);
-        }
-      }
-
-      // 일반적인 에러 처리
-      throw new Error('회원가입에 실패했습니다.')
+      const detail = error.response?.data?.detail;
+      throw new Error(detail || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('inventoryItems')
+    setToken(null);
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -120,17 +126,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUser = async (updatedFields: Partial<User>) => {
     try {
       setIsLoading(true);
-      
+
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // In a real app, send the updated fields to your API
       // For now, just update the local state
       const updatedUser = { ...user, ...updatedFields } as User;
-      
+
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
-      
+
     } catch (error) {
       console.error('User update failed:', error);
       throw new Error('사용자 정보 업데이트에 실패했습니다.');
@@ -140,30 +146,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const deleteAccount = async (password: string) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const user_id = Number(user.user_id);
-
-      const response = await axios.delete(`http://localhost:8000/user/${user_id}/delete`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        },
-        data: {
-          password: password
-        }
-      })
-
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('inventoryItems')
-      setUser(null);
-      setIsAuthenticated(false);
-      
+      if (!user) throw new Error('사용자 정보가 없습니다.');
+      await apiClient.delete(`/user/${user.user_id}/delete`, {
+        data: { password },
+      });
+      logout();
     } catch (error) {
       console.error('Account deletion failed:', error);
       throw new Error('계정 삭제에 실패했습니다.');
@@ -175,14 +164,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <AuthContext.Provider
       value={{
+        apiClient,
         user,
+        user_id: user?.user_id ?? null,
+        token,
         isAuthenticated,
         isLoading,
         login,
         signup,
         logout,
         updateUser,
-        deleteAccount
+        deleteAccount,
       }}
     >
       {children}
@@ -192,7 +184,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

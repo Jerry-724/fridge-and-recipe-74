@@ -1,8 +1,8 @@
-
+// src/components/InventoryItem.tsx
 import React from 'react';
 import { Item } from '../types/api';
 import { useInventory } from '../context/InventoryContext';
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface InventoryItemProps {
   item: Item;
@@ -24,77 +24,62 @@ const getFoodEmoji = (itemName: string): string => {
     '초콜릿': '🍫', '커피': '☕', '주스': '🧃',
   };
   
-  // Find the first matching key or use a default
   for (const [key, emoji] of Object.entries(emojiMap)) {
     if (itemName.includes(key)) {
       return emoji;
     }
   }
   
-  return '🍽️'; // Default emoji if no match found
+  return '🍽️';
 };
 
 const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   const { isSelectionMode, selectedItems, selectItem, deselectItem } = useInventory();
+  const hasExpiry = item.daysLeft != null;
+  const isExpiringSoon = hasExpiry && item.daysLeft! > 0 && item.daysLeft! <= 3;
+  const isExpired = hasExpiry && item.daysLeft! <= 0;
   const isSelected = selectedItems.includes(item.item_id);
-  
-  const isExpiringSoon = (item.daysLeft !== undefined && item.daysLeft <= 3 && item.daysLeft > 0);
-  const isExpired = (item.daysLeft !== undefined && item.daysLeft <= 0);
-  
+
   const handleClick = () => {
     if (isSelectionMode) {
-      if (isSelected) {
-        deselectItem(item.item_id);
-      } else {
-        selectItem(item.item_id);
-      }
+      isSelected ? deselectItem(item.item_id) : selectItem(item.item_id);
     }
   };
-  
+
   return (
     <div
-      className={`relative flex flex-col items-center p-3 border-2 border-primary rounded-lg ${
-        isExpiringSoon ? 'border-destructive' : ''
-      }`}
+      className={`relative flex flex-col items-center p-3 border-2 rounded-lg
+        ${isExpiringSoon ? 'border-destructive' : 'border-primary'}`}
       onClick={handleClick}
     >
       {isSelectionMode && (
-        <div className="absolute top-0 right-0 z-10 p-1">
-          <Checkbox 
+        <div className="absolute top-1 right-1 z-10">
+          <Checkbox
             checked={isSelected}
-            className="border-2 h-5 w-5"
-            onCheckedChange={(checked) => {
-              if (checked) {
-                selectItem(item.item_id);
-              } else {
-                deselectItem(item.item_id);
-              }
-            }}
+            className="h-5 w-5"
+            onCheckedChange={(checked) =>
+              checked ? selectItem(item.item_id) : deselectItem(item.item_id)
+            }
           />
         </div>
       )}
-      
-      <div className="text-3xl mb-2">
-        {getFoodEmoji(item.item_name)}
-      </div>
-      
-      <div className="text-sm font-bold">
-        {item.item_name}
-      </div>
-      
-      <div className={`text-xs mt-1 ${
-        isExpiringSoon || isExpired ? 'text-destructive' : 'text-gray-500'
-      }`}>
-        {item.daysLeft !== undefined
-          ? item.daysLeft <= 0 
+
+      <div className="text-3xl mb-2">{getFoodEmoji(item.item_name)}</div>
+      <div className="text-sm font-bold">{item.item_name}</div>
+      <div
+        className={`text-xs mt-1 ${
+          isExpiringSoon || isExpired ? 'text-destructive' : 'text-gray-500'
+        }`}
+      >
+        {hasExpiry
+          ? isExpired
             ? '유통기한 지남'
             : `${item.daysLeft}일 남음`
-          : '날짜 정보 없음'}
+          : '무기한'}
       </div>
-      
-      {/* Single overlay for expired items that covers the entire component */}
+
       {isExpired && (
-        <div className="absolute inset-0 bg-black/30 rounded-lg pointer-events-none"></div>
+        <div className="absolute inset-0 bg-black/30 rounded-lg pointer-events-none" />
       )}
     </div>
   );

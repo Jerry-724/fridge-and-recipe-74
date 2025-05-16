@@ -42,7 +42,7 @@ const MyPageForm = () => {
         new_username: newNickname
       });
 
-      const updatedUserData = await axios.get(`http://localhost:8000/${user.user_id}/mypage`);
+      const updatedUserData = await axios.get(`http://localhost:8000/mypage/${user.user_id}`);
       localStorage.setItem("user", JSON.stringify((updatedUserData.data)));
 
       await updateUser(updatedUserData.data);
