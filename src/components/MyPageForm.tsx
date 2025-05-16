@@ -70,6 +70,10 @@ const MyPageForm = () => {
       if (newPassword !== confirmPassword) {
         throw new Error('새 비밀번호가 일치하지 않습니다.');
       }
+
+      if (newPassword === currentPassword) {
+        throw new Error('기존 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.');
+      }
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
