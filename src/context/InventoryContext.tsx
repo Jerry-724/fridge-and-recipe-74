@@ -31,6 +31,9 @@ interface InventoryContextType {
   setSelectionMode: (mode: boolean) => void;
 
   refreshInventory: () => Promise<void>;
+
+  // 삭제
+  deleteItems: (itemIds: number[]) => Promise<void>;
 }
 
 const InventoryContext = createContext<InventoryContextType | undefined>(
@@ -55,6 +58,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   const { apiClient, user, isAuthenticated } = useAuth();
 
   const fetchData = async () => {
+    if (!user) return;
     setIsLoading(true);
     try {
       const catRes = await apiClient.get<Category[]>("/category/");
@@ -78,6 +82,32 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
       toast.error("재고 데이터를 불러오는 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const deleteItems = async (itemIds: number[]) => {
+    if (!user) return;
+
+    // 1. 백업
+    const prevItems = [...items];
+
+    // 2. optimistic UI 업데이트
+    setItems((prev) => prev.filter((item) => !itemIds.includes(item.id)));
+
+  
+    try {
+      const res = await apiClient.delete(`/item/${user.user_id}/delete`, {
+        data: { item_ids: itemIds }, // axios에서는 DELETE에 data 넣을 수 있음
+      });
+  
+      toast.success("선택한 항목이 삭제되었습니다.");
+      await fetchData(); // 삭제 후 목록 새로고침
+      clearSelectedItems(); // 선택 항목 초기화
+      setSelectionMode(false); // 선택 모드 종료
+    } catch (error: any) {
+      console.error("삭제 오류:", error);
+      toast.error("삭제 중 오류가 발생했습니다.");
+      setItems(prevItems);
     }
   };
 
@@ -117,6 +147,8 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         setSelectionMode,
 
         refreshInventory: fetchData,
+
+        deleteItems,
       }}
     >
       {children}
