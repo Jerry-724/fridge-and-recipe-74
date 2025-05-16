@@ -40,7 +40,7 @@ const App = () => {
                   {/* Protected */}
                   <Route element={<AuthLayout />}>
                     <Route path="/item/:user_id" element={<InventoryPage />} />
-                    <Route path="/recipe" element={<RecipePage />} />
+                    <Route path="/:user_id/recipe" element={<RecipePage />} />
                     <Route path="/mypage/:user_id" element={<MyPage />} />
                   </Route>
 

@@ -1,5 +1,7 @@
 
 import React, { createContext, useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 interface Message {
   id: number;
@@ -16,11 +18,35 @@ interface RecipeContextType {
 
 const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 
+// API 기본 설정
+const api = axios.create({
+  baseURL: 'http://localhost:8000', // 백엔드 서버 URL로 변경 필요
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
+
+// 요청 인터셉터 - 모든 요청에 토큰 추가
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+const userId = localStorage.getItem("user_id");
+
 export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: '안녕하세요! 오늘은 어떤 요리를 도와드릴까요?', isUser: false }
   ]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { user_id } = useParams<{ user_id: string }>();
   
   const sendMessage = async (messageText: string) => {
     try {
@@ -35,25 +61,17 @@ export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       
       setMessages(prev => [...prev, userMessage]);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log("🔍 user_request:", messageText);
       
-      // Mock responses based on keywords
-      let responseText = '죄송합니다. 지금은 답변할 수 없습니다.';
+      // 백엔드 API 호출
+      const response = await api.get(`/qa/${user_id}/recommend-recipes`, {
+        params: { user_request: messageText }
+      });
       
-      if (messageText.includes('추천')) {
-        responseText = '냉장고 속 재료로 만들 수 있는 요리는 다음과 같습니다:\n\n1. 소고기 버섯 볶음\n2. 당근 사과 샐러드\n3. 우유 푸딩';
-      } else if (messageText.includes('레시피') || messageText.includes('만드는 법')) {
-        responseText = '소고기 버섯 볶음 레시피:\n\n재료: 소고기 100g, 버섯 50g, 간장 1큰술, 설탕 1작은술\n\n1. 소고기는 얇게 썰어 간장과 설탕에 재워둡니다.\n2. 버섯은 적당한 크기로 썹니다.\n3. 팬에 기름을 두르고 소고기를 볶다가 버섯을 넣고 함께 볶아줍니다.\n4. 간이 부족하면 소금을 약간 더해줍니다.';
-      } else if (messageText.includes('안녕') || messageText.includes('뭐해')) {
-        responseText = '안녕하세요! 오늘 뭐 드실지 고민이시라면 냉장고 속 재료를 알려주세요.';
-      } else if (messageText.includes('저녁')) {
-        responseText = '오늘 저녁으로는 소고기 볶음이 어떨까요? 당근과 함께 볶으면 영양가도 높아집니다.';
-      }
-      
+      // 봇 응답 메시지 추가
       const botMessage: Message = {
-        id: messages.length + 2,
-        text: responseText,
+        id: Date.now() + 1,
+        text: response.data.result,
         isUser: false,
       };
       
@@ -61,6 +79,19 @@ export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       
     } catch (error) {
       console.error('Error sending message:', error);
+
+      // 오류 메시지 추가
+      let errorMessage = '죄송합니다. 요청을 처리하는 중 오류가 발생했습니다.';
+      
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        errorMessage = '로그인이 필요하거나 세션이 만료되었습니다. 다시 로그인해주세요.';
+      }
+      
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        text: errorMessage,
+        isUser: false,
+      }]);
     } finally {
       setIsLoading(false);
     }
