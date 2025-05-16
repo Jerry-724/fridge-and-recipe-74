@@ -40,7 +40,7 @@ const App = () => {
                   {/* Protected routes */}
                   <Route element={<AuthLayout />}>
                     <Route path="/inventory" element={<InventoryPage />} />
-                    <Route path="/recipe" element={<RecipePage />} />
+                    <Route path="/:user_id/recipe" element={<RecipePage />} />
                     <Route path="/:user_id/mypage" element={<MyPage />} />
                   </Route>
 
