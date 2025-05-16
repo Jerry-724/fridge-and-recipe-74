@@ -1,7 +1,8 @@
+// src/components/OcrAddItemsModal.tsx
 import React, { useState, useEffect } from 'react';
 import { useOcr } from '../hooks/use-ocr';
 import { useInventory } from '../context/InventoryContext';
-import { useAuth }      from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../hooks/use-toast';
 import { X } from 'lucide-react';
 
@@ -28,7 +29,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
   const [previewItems, setPreviewItems] = useState<PreviewItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 1) 파일 선택 → scanning
+  // 1) 파일 선택 → scanning 단계로
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -47,13 +48,15 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     (async () => {
       setLoading(true);
       try {
+        // 카테고리가 비어있으면 한 번만 불러오기
         if (categories.length === 0) {
           await refreshInventory();
         }
-        const names = await extractNames(file);
+        const names      = await extractNames(file);
         const classified = await classifyNames(names);
 
         const items: PreviewItem[] = classified.map(it => {
+          // OCR에서 온 expiry_text로부터 기본 expiry_date 계산
           let expiry_date = '';
           if (it.expiry_text !== '무기한') {
             const days = parseInt(it.expiry_text.replace(/\D/g, ''), 10) || 0;
@@ -61,6 +64,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             d.setDate(d.getDate() + days);
             expiry_date = d.toISOString().slice(0, 10);
           }
+          // 카테고리 매핑
           const cat = categories.find(c =>
             c.category_major_name === it.category_major_name &&
             c.category_sub_name   === it.category_sub_name
@@ -91,7 +95,8 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     })();
 
     return () => { cancelled = true; };
-  }, [stage, file, categories, refreshInventory, extractNames, classifyNames, toast, onClose]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, file]);
 
   // 3) 확인 단계에서 필드 수정
   const updateItem = (
@@ -108,18 +113,18 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     );
   };
 
-  // 4) 저장 → 항상 expiry_date 우선 반영해서 expiry_text 재계산 후 전송
+  // 4) 저장 → 사용자 수정 expiry_date 반영해서 expiry_text 재계산
   const handleSave = async () => {
     setLoading(true);
     try {
       const itemsPayload = previewItems.map(it => {
         const cat = categories.find(c => c.category_id === it.category_id)!;
-        // 만약 사용자가 직접 expiry_date를 고쳤다면 그 날짜 기준으로 expiry_text를 다시 계산
+        // 사용자가 직접 고친 expiry_date 가 있으면 그걸로 다시 expiry_text 계산
         let finalExpiryText = it.expiry_text;
         if (it.expiry_date) {
-          const target = new Date(it.expiry_date).getTime();
-          const today  = Date.now();
-          const diffDays = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+          const target    = new Date(it.expiry_date).getTime();
+          const today     = Date.now();
+          const diffDays  = Math.max(0, Math.ceil((target - today) / (1000 * 60 * 60 * 24)));
           finalExpiryText = diffDays > 0 ? `${diffDays}일` : '0일';
         }
         return {
