@@ -124,13 +124,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updateUser = async (updatedFields: Partial<User>) => {
-    setIsLoading(true);
     try {
-      // 백엔드에 PATCH 호출 예시 (endpoint가 /user/me 라고 가정)
-      const response = await apiClient.patch<User>('/user/me', updatedFields);
-      const updatedUser = response.data;
+      setIsLoading(true);
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // In a real app, send the updated fields to your API
+      // For now, just update the local state
+      const updatedUser = { ...user, ...updatedFields } as User;
+      
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
+      
     } catch (error) {
       console.error('User update failed:', error);
       throw new Error('사용자 정보 업데이트에 실패했습니다.');

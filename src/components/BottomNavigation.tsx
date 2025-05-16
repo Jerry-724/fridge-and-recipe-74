@@ -36,7 +36,7 @@ const BottomNavigation: React.FC = () => {
       <Link
         to={`/mypage/${user.user_id}`}
         className={`flex flex-col items-center w-1/3 ${
-            isActive(`/${user.user_id}/mypage`) ? 'text-primary' : 'text-gray-500'
+            isActive(`/mypage/${user.user_id}`) ? 'text-primary' : 'text-gray-500'
         }`}
       >
         <User size={22} />
