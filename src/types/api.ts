@@ -18,6 +18,7 @@ export interface Item {
   expiry_date: string;
   created_at: string;
   daysLeft?: number; // Calculated field, not from DB
+  category?: Category;
 }
 
 // Category model

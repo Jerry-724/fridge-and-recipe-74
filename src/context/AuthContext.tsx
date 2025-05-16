@@ -112,6 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('inventoryItems')
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -159,6 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('inventoryItems')
       setUser(null);
       setIsAuthenticated(false);
       

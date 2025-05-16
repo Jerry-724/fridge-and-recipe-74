@@ -1,4 +1,12 @@
 
+const normalizeCategoryName = (name: string) => {
+  if (name.includes("동물성")) return "동물성";
+  if (name.includes("식물성") || name.includes("곡물") || name.includes("채소") || name.includes("과일")) return "식물성";
+  if (name.includes("가공")) return "가공식품";
+  if (name.includes("조미료") || name.includes("양념")) return "조미료·양념";
+  return "기타";
+};
+
 import React from 'react';
 import { useInventory } from '../context/InventoryContext';
 import InventoryItem from './InventoryItem';
@@ -42,11 +50,16 @@ const InventoryList: React.FC = () => {
   if (selectedCategoryId) {
     const selectedCategory = categories.find(c => c.category_id === selectedCategoryId);
     if (selectedCategory) {
-      selectedMajorCategory = selectedCategory.category_major_name;
+      const normalizedSelectedMajor = normalizeCategoryName(selectedCategory.category_major_name);
+      selectedMajorCategory = normalizedSelectedMajor;
       filteredItems = items.filter(item => {
-        const itemCategory = categories.find(c => c.category_id === item.category_id);
-        return itemCategory && itemCategory.category_major_name === selectedCategory.category_major_name;
+        const itemCategory = item.category;
+
+        return itemCategory && normalizeCategoryName(itemCategory.category_major_name) === normalizedSelectedMajor;
       });
+    } else {
+      filteredItems = [];
+      selectedMajorCategory = ''
     }
   }
 
@@ -107,7 +120,7 @@ const InventoryList: React.FC = () => {
     
     // Add items to their subcategories
     filteredItems.forEach(item => {
-      const category = categories.find(c => c.category_id === item.category_id);
+      const category = categories.find(c => c.category_id === item.category.category_id);
       const subCategory = category?.category_sub_name || '기타';
       
       if (!groupedItems[subCategory]) {
@@ -139,7 +152,8 @@ const InventoryList: React.FC = () => {
     
     return (
       <div className="overflow-y-auto h-[calc(100vh-130px)] scrollbar-none touch-pan-y bg-[#FFFFF0]">
-        {Object.keys(groupedItems).length === 0 ? (
+        {
+          filteredItems.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>아직 등록된 식품이 없습니다.</p>
           </div>

@@ -72,6 +72,8 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setItems(itemsWithDaysLeft);
       setCategories(categoriesRes.data)
 
+      localStorage.setItem("inventoryItems", JSON.stringify(itemsWithDaysLeft));
+
     } catch (error) {
       console.error('Error fetching inventory data:', error);
     } finally {
