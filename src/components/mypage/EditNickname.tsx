@@ -22,8 +22,8 @@ interface EditNicknameProps {
 }
 
 const formSchema = z.object({
-  currentPassword: z.string().min(1, "비밀번호를 입력해주세요"),
-  newNickname: z.string().min(2, "닉네임은 2자 이상이어야 합니다"),
+  currentPassword: z.string().min(1, "비밀번호를 입력해주세요."),
+  newNickname: z.string().min(1, "새 닉네임을 입력해주세요."),
 });
 
 const EditNickname: React.FC<EditNicknameProps> = ({ onCancel, onSubmit, loading }) => {
