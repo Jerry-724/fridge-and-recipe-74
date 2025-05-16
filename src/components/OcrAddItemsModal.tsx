@@ -29,7 +29,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
   const [previewItems, setPreviewItems] = useState<PreviewItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 1) 파일 선택 → 스캐닝 단계로
+  // 1) 파일 선택 → scanning 단계로
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -48,14 +48,15 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     (async () => {
       setLoading(true);
       try {
+        // 카테고리가 비어있으면 한 번만 불러오기
         if (categories.length === 0) {
           await refreshInventory();
         }
-        const names = await extractNames(file);
+        const names      = await extractNames(file);
         const classified = await classifyNames(names);
 
         const items: PreviewItem[] = classified.map(it => {
-          // expiry_date 계산
+          // OCR에서 온 expiry_text로부터 기본 expiry_date 계산
           let expiry_date = '';
           if (it.expiry_text !== '무기한') {
             const days = parseInt(it.expiry_text.replace(/\D/g, ''), 10) || 0;
@@ -63,7 +64,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
             d.setDate(d.getDate() + days);
             expiry_date = d.toISOString().slice(0, 10);
           }
-          // category_id 매핑
+          // 카테고리 매핑
           const cat = categories.find(c =>
             c.category_major_name === it.category_major_name &&
             c.category_sub_name   === it.category_sub_name
@@ -93,12 +94,11 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
       }
     })();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, file]);
 
-  // 3) 확인 단계 필드 수정
+  // 3) 확인 단계에서 필드 수정
   const updateItem = (
     idx: number,
     key: keyof PreviewItem,
@@ -113,25 +113,33 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
     );
   };
 
-  // 4) 저장 → 백엔드에 expiry_text 대신 수동 고친 expiry_date를 보내기
+  // 4) 저장 → 사용자 수정 expiry_date 반영해서 expiry_text 재계산
   const handleSave = async () => {
     setLoading(true);
     try {
-      // 백엔드 스키마에 맞춰 user_id 와 items 를 통째로 넘겨줍니다
       const itemsPayload = previewItems.map(it => {
         const cat = categories.find(c => c.category_id === it.category_id)!;
+        // 사용자가 직접 고친 expiry_date 가 있으면 그걸로 다시 expiry_text 계산
+        let finalExpiryText = it.expiry_text;
+        if (it.expiry_date) {
+          const target    = new Date(it.expiry_date).getTime();
+          const today     = Date.now();
+          const diffDays  = Math.max(0, Math.ceil((target - today) / (1000 * 60 * 60 * 24)));
+          finalExpiryText = diffDays > 0 ? `${diffDays}일` : '0일';
+        }
         return {
           item_name:           it.item_name,
           category_major_name: cat.category_major_name,
           category_sub_name:   cat.category_sub_name,
-          expiry_text:         it.expiry_text,
-          expiry_date:         it.expiry_date || null,    // <-- send the ISO date (or null)
+          expiry_text:         finalExpiryText,
         };
       });
+
       await saveItems({
         user_id: user!.user_id,
         items:   itemsPayload,
       });
+
       toast({ title: '완료', description: `${previewItems.length}개 추가되었습니다.` });
       onClose();
       await refreshInventory();
@@ -155,7 +163,7 @@ export function OcrAddItemsModal({ onClose }: OcrAddItemsModalProps) {
         <button onClick={onClose} className="text-gray-500">✕</button>
       </div>
 
-      {/* 콘텐츠 */}
+      {/* 본문 */}
       <div className="flex-1 overflow-auto p-4">
         {stage === 'upload' && (
           <div className="space-y-4 text-center">
