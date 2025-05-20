@@ -11,7 +11,11 @@ const Mypage: React.FC = () => {
     if (user_id) {
       const fetchUserData = async () => {
         try {
-          const response = await axios.get(`http://localhost:8000/mypage/${user_id}/`);
+          const response = await axios.get(`http://localhost:8000/mypage/${user_id}/`, {
+              headers: {
+                "ngrok-skip-browser-warning": "true"
+              }
+    });
           setUserData(response.data); // 응답 데이터를 상태에 저장
         } catch (error) {
           console.error("User data fetch failed", error);

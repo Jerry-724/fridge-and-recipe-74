@@ -41,6 +41,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // headers 가 undefined 라면 빈 객체로 초기화
         (config.headers as Record<string,string>) = config.headers as Record<string,string> || {};
         (config.headers as Record<string,string>)['Authorization'] = `Bearer ${token}`;
+        // ngrok 경고 우회 헤더 추가
+        (config.headers as Record<string, string>)['ngrok-skip-browser-warning'] = 'true';
       }
       return config;
     });

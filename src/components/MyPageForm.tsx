@@ -40,9 +40,19 @@ const MyPageForm = () => {
       const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/username`, {
         password: currentPassword,
         new_username: newNickname
-      });
+      },
+      {
+        headers: {
+          "ngrok-skip-browser-warning": "true"
+        }
+      }
+      );
 
-      const updatedUserData = await axios.get(`http://localhost:8000/mypage/${user.user_id}`);
+      const updatedUserData = await axios.get(`http://localhost:8000/mypage/${user.user_id}`, {
+        headers: {
+          "ngrok-skip-browser-warning": "true"
+        }
+      });
       localStorage.setItem("user", JSON.stringify((updatedUserData.data)));
 
       await updateUser(updatedUserData.data);
@@ -83,6 +93,7 @@ const MyPageForm = () => {
         new_password: newPassword
       }, {
         headers: {
+          "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       })

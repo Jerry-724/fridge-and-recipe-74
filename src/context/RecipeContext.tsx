@@ -22,6 +22,7 @@ const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL, // 백엔드 서버 URL로 변경 필요
   headers: {
+    "ngrok-skip-browser-warning": "true",
     'Content-Type': 'application/json',
   },
   withCredentials: true,
