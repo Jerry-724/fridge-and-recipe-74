@@ -92,7 +92,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     const prevItems = [...items];
 
     // 2. optimistic UI 업데이트
-    setItems((prev) => prev.filter((item) => !itemIds.includes(item.id)));
+    setItems((prev) => prev.filter((item) => !itemIds.includes(item.item_id)));
 
   
     try {
