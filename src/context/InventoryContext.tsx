@@ -68,7 +68,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         `/item/${user?.user_id}/`
       );
 
-      console.log("Item API 응답:", itemRes.data);
       const withDaysLeft = itemRes.data.map((it) => {
         const expiry = it.expiry_date ? new Date(it.expiry_date) : null;
         const daysLeft = expiry
