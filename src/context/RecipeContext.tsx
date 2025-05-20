@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import * as process from "node:process";
 
 interface Message {
   id: number;
@@ -20,7 +21,7 @@ const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 
 // API 기본 설정
 const api = axios.create({
-  baseURL: 'http://localhost:8000', // 백엔드 서버 URL로 변경 필요
+  baseURL: process.env.API_URL, // 백엔드 서버 URL로 변경 필요
   headers: {
     'Content-Type': 'application/json',
   },

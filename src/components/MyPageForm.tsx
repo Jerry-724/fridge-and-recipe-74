@@ -19,6 +19,15 @@ import axios from "axios";
 
 type FormMode = 'view' | 'editNickname' | 'editPassword' | 'deleteAccount';
 
+// API 기본 설정
+const api = axios.create({
+  baseURL: process.env.API_URL, // 백엔드 서버 URL로 변경 필요
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
+
 const MyPageForm = () => {
   const [mode, setMode] = useState<FormMode>('view');
   const [loading, setLoading] = useState(false);
@@ -37,12 +46,12 @@ const MyPageForm = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/username`, {
+      const response = await api.patch(`user/${user.user_id}/username`, {
         password: currentPassword,
         new_username: newNickname
       });
 
-      const updatedUserData = await axios.get(`http://localhost:8000/mypage/${user.user_id}`);
+      const updatedUserData = await api.get(`/mypage/${user.user_id}`);
       localStorage.setItem("user", JSON.stringify((updatedUserData.data)));
 
       await updateUser(updatedUserData.data);
@@ -78,7 +87,7 @@ const MyPageForm = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/password`, {
+      const response = await api.patch(`/user/${user.user_id}/password`, {
         password: currentPassword,
         new_password: newPassword
       }, {

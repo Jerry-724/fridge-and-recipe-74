@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // 1) Axios 인스턴스 생성 및 토큰 자동 헤더 삽입
   const apiClient = useMemo(() => {
     const client = axios.create({
-      baseURL: 'http://localhost:8000',
+      baseURL: process.env.API_URL
     });
     client.interceptors.request.use((config) => {
       if (token) {

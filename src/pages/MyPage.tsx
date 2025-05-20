@@ -3,6 +3,15 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import MyPageForm from "../components/MyPageForm";
 
+// API 기본 설정
+const api = axios.create({
+  baseURL: process.env.API_URL, // 백엔드 서버 URL로 변경 필요
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
+
 const Mypage: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>(); // URL 파라미터에서 user_id 가져오기
   const [userData, setUserData] = useState<any>(null);
@@ -11,7 +20,7 @@ const Mypage: React.FC = () => {
     if (user_id) {
       const fetchUserData = async () => {
         try {
-          const response = await axios.get(`http://localhost:8000/mypage/${user_id}/`);
+          const response = await api.get(`/mypage/${user_id}/`);
           setUserData(response.data); // 응답 데이터를 상태에 저장
         } catch (error) {
           console.error("User data fetch failed", error);
