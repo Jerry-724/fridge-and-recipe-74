@@ -1,6 +1,6 @@
 // src/App.tsx
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as Sonner, toast } from "@/components/ui/sonner";
@@ -17,7 +17,7 @@ import MyPage from "./pages/MyPage";
 import NotFound from "./pages/NotFound";
 import AuthLayout from "./components/AuthLayout";
 
-// Firebase Messaging import
+// Firebase Messaging
 import { getToken, onMessage } from "firebase/messaging";
 import { messaging, sendTokenToServer } from "./firebase";
 
@@ -34,10 +34,12 @@ const queryClient = new QueryClient({
 
 const App = () => {
   const [fcmToken, setFcmToken] = useState<string>("");
-  const [pushMsg, setPushMsg] = useState<{ title: string; body: string } | null>(null);
+
+  // 중복 토스트 방지를 위한 ID 저장소
+  const seenIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    // 1) 권한 요청 & 토큰 발급
+    // 1) 푸시 권한 요청 & 토큰 발급
     const fetchToken = async () => {
       try {
         const permission = await Notification.requestPermission();
@@ -53,29 +55,26 @@ const App = () => {
     };
     fetchToken();
 
-    // 2) 포그라운드 메시지 핸들러
+    // 2) 포그라운드 메시지 수신 (중복 제거)
     const handleForeground = (payload: any) => {
+      // item_id 로 중복 처리
+      const itemId = payload.data?.item_id;
+      if (itemId && seenIdsRef.current.has(itemId)) {
+        return; // 이미 알림 보냄
+      }
+      if (itemId) {
+        seenIdsRef.current.add(itemId);
+      }
       const { title = "", body = "" } = payload.notification ?? {};
-      setPushMsg({ title, body });
       toast(`${title}: ${body}`);
     };
+
     const unsubscribeOnMessage = onMessage(messaging, handleForeground);
 
-    // 3) 백그라운드 메시지 핸들러 (서비스워커)
-    const handleSWMessage = (event: MessageEvent) => {
-      const data = event.data;
-      if (data?.messageType === "push-received") {
-        const { title = "", body = "" } = data.notification ?? {};
-        setPushMsg({ title, body });
-        toast(`${title}: ${body}`);
-      }
-    };
-    navigator.serviceWorker.addEventListener("message", handleSWMessage);
-
-    // cleanup: 리스너 제거
     return () => {
       unsubscribeOnMessage();
-      navigator.serviceWorker.removeEventListener("message", handleSWMessage);
+      // 컴포넌트 언마운트 시 중복 기록 리셋
+      seenIdsRef.current.clear();
     };
   }, []);
 
@@ -85,9 +84,8 @@ const App = () => {
         <AuthProvider>
           <InventoryProvider>
             <RecipeProvider>
-              <Sonner position="top-center" closeButton toastOptions={{ duration: 3000 }} />
+              <Sonner position="top-center" closeButton toastOptions={{ duration: 5000 }} />
 
-              {/* 라우팅 */}
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<AuthPage />} />
