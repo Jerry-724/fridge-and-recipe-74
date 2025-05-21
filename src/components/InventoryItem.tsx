@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Item } from '../types/api';
 import { useInventory } from '../context/InventoryContext';
 import { Checkbox } from '@/components/ui/checkbox';
-import { getFoodEmoji, extractMainCategory } from '@/lib/emojiUtils';
+import { extractMainEmoji } from '@/lib/emojiUtils';
 
 interface InventoryItemProps {
   item: Item;
@@ -11,31 +11,31 @@ interface InventoryItemProps {
 
 const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   const { isSelectionMode, selectedItems, selectItem, deselectItem } = useInventory();
-  const [displayName, setDisplayName] = useState(item.item_name);
+  const [emoji, setEmoji] = useState('🍽️');
   const hasExpiry = item.daysLeft != null;
   const isExpiringSoon = hasExpiry && item.daysLeft! > 0 && item.daysLeft! <= 3;
   const isExpired = hasExpiry && item.daysLeft! <= 0;
   const isSelected = selectedItems.includes(item.item_id);
 
-  // LLM 기반 카테고리 추출 로직
+  // LLM 기반 이모지 추출 로직
   useEffect(() => {
     let isMounted = true;
 
-    const fetchCategory = async () => {
+    const fetchEmoji = async () => {
       try {
-        const category = await extractMainCategory(item.item_name);
-        if (isMounted) {
-          setDisplayName(category);
+        const result = await extractMainEmoji(item.item_name);
+        if (isMounted && result) {
+          setEmoji(result);
         }
       } catch (error) {
-        console.error('카테고리 추출 실패:', error);
+        console.error('이모지 추출 실패:', error);
         if (isMounted) {
-          setDisplayName(item.item_name); // 실패 시 원본 이름 유지
+          setEmoji('🍽️'); // 실패 시 기본 이모지
         }
       }
     };
 
-    fetchCategory();
+    fetchEmoji();
 
     return () => {
       isMounted = false;
@@ -67,7 +67,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
         </div>
       )}
 
-      <div className="text-3xl mb-2">{getFoodEmoji(displayName)}</div>
+      <div className="text-3xl mb-2">{emoji}</div>
       <div className="text-sm font-bold text-center">{item.item_name}</div>
       <div
         className={`text-xs mt-1 ${
