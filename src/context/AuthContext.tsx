@@ -1,3 +1,4 @@
+// src/context/AuthContext.tsx
 import React, {
   createContext,
   useState,
@@ -45,7 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     (error) => Promise.reject(error)
   );
   return client;
-}, []);
+}, [token]);
 
 
   // 2) 초기 로컬스토리지에서 토큰·유저 로드
