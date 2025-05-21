@@ -52,71 +52,74 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   };
   
   return (
-    <div className="w-full max-w-md px-6 animate-slide-down">
-      <h2 className="text-2xl font-bold text-center text-[#70B873] mb-6">뭐먹을냉?</h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div>
-          <input
-            type="text"
-            className="input-field"
-            placeholder="아이디"
-            value={login_id}
-            onChange={(e) => setLoginId(e.target.value)}
+    // ✅ flex, justify-center, items-center, min-h-screen 추가
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50">
+      <div className="w-full max-w-md px-6 animate-slide-down">
+        <h2 className="text-2xl font-bold text-center text-[#70B873] mb-6">뭐먹을냉?</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <input
+              type="text"
+              className="input-field"
+              placeholder="아이디"
+              value={login_id}
+              onChange={(e) => setLoginId(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div>
+            <input
+              type="password"
+              className="input-field"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div>
+            <input
+              type="password"
+              className="input-field"
+              placeholder="비밀번호 확인"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div>
+            <input
+              type="text"
+              className="input-field"
+              placeholder="닉네임"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors mt-2"
             disabled={isLoading}
-          />
-        </div>
-        
-        <div>
-          <input
-            type="password"
-            className="input-field"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          >
+            {isLoading ? '회원가입 중...' : '회원가입'}
+          </button>
+        </form>
+
+        <div className="mt-4 text-center">
+          <button
+            onClick={onToggleLogin}
+            className="text-primary hover:text-primary-dark transition-colors"
             disabled={isLoading}
-          />
+          >
+            로그인
+          </button>
         </div>
-        
-        <div>
-          <input
-            type="password"
-            className="input-field"
-            placeholder="비밀번호 확인"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            disabled={isLoading}
-          />
-        </div>
-        
-        <div>
-          <input
-            type="text"
-            className="input-field"
-            placeholder="닉네임"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            disabled={isLoading}
-          />
-        </div>
-        
-        <button
-          type="submit"
-          className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-md transition-colors mt-2"
-          disabled={isLoading}
-        >
-          {isLoading ? '회원가입 중...' : '회원가입'}
-        </button>
-      </form>
-      
-      <div className="mt-4 text-center">
-        <button
-          onClick={onToggleLogin}
-          className="text-primary hover:text-primary-dark transition-colors"
-          disabled={isLoading}
-        >
-          로그인
-        </button>
       </div>
     </div>
   );
