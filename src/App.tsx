@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as Sonner, toast } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { InventoryProvider } from "./context/InventoryContext";
 import { RecipeProvider } from "./context/RecipeContext";
 
@@ -34,6 +34,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   const [fcmToken, setFcmToken] = useState<string>("");
+  const { user } = useAuth();
 
   // 중복 토스트 방지를 위한 ID 저장소
   const seenIdsRef = useRef<Set<string>>(new Set());
@@ -44,7 +45,7 @@ const App = () => {
       try {
         const permission = await Notification.requestPermission();
         if (permission !== "granted") return;
-        const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+        const currentToken = await getToken(messaging, {vapidKey: VAPID_KEY});
         if (currentToken) {
           setFcmToken(currentToken);
           await sendTokenToServer(currentToken);
@@ -55,15 +56,17 @@ const App = () => {
     };
     fetchToken();
 
+    const currentSeenIds = seenIdsRef.current;
+
     // 2) 포그라운드 메시지 수신 (중복 제거)
     const handleForeground = (payload: any) => {
       // item_id 로 중복 처리
       const itemId = payload.data?.item_id;
-      if (itemId && seenIdsRef.current.has(itemId)) {
+      if (itemId && currentSeenIds.has(itemId)) {
         return; // 이미 알림 보냄
       }
       if (itemId) {
-        seenIdsRef.current.add(itemId);
+        currentSeenIds.add(itemId);
       }
       const { title = "", body = "" } = payload.notification ?? {};
       toast(`${title}: ${body}`);
@@ -74,9 +77,9 @@ const App = () => {
     return () => {
       unsubscribeOnMessage();
       // 컴포넌트 언마운트 시 중복 기록 리셋
-      seenIdsRef.current.clear();
+      currentSeenIds.clear();
     };
-  }, []);
+  }, [user]);
 
   return (
     <QueryClientProvider client={queryClient}>
