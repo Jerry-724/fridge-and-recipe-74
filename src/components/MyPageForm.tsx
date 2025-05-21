@@ -17,6 +17,13 @@ import EditPassword from './mypage/EditPassword';
 import DeleteAccount from './mypage/DeleteAccount';
 import axios from "axios";
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
+});
+
 type FormMode = 'view' | 'editNickname' | 'editPassword' | 'deleteAccount';
 
 const MyPageForm = () => {
@@ -37,7 +44,7 @@ const MyPageForm = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/username`, {
+      const response = await api.patch(`/user/${user.user_id}/username`, {
         password: currentPassword,
         new_username: newNickname
       },
@@ -48,7 +55,7 @@ const MyPageForm = () => {
       }
       );
 
-      const updatedUserData = await axios.get(`http://localhost:8000/mypage/${user.user_id}`, {
+      const updatedUserData = await api.get(`/mypage/${user.user_id}`, {
         headers: {
           "ngrok-skip-browser-warning": "true"
         }
@@ -88,7 +95,7 @@ const MyPageForm = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const response = await axios.patch(`http://localhost:8000/user/${user.user_id}/password`, {
+      const response = await api.patch(`/user/${user.user_id}/password`, {
         password: currentPassword,
         new_password: newPassword
       }, {
