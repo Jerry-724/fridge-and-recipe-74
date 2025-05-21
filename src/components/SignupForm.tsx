@@ -54,7 +54,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   return (
     // ✅ flex, justify-center, items-center, min-h-screen 추가
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md px-6 animate-slide-down">
+      <div className="w-full max-w-md mx-auto px-6 animate-slide-down">
         <h2 className="text-2xl font-bold text-center text-[#70B873] mb-6">뭐먹을냉?</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
