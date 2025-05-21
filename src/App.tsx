@@ -32,7 +32,8 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => {
+// ✅ 별도의 내부 컴포넌트에서 useAuth 사용
+const FCMHandler = () => {
   const [fcmToken, setFcmToken] = useState<string>("");
   const { user } = useAuth();
 
@@ -40,12 +41,11 @@ const App = () => {
   const seenIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    // 1) 푸시 권한 요청 & 토큰 발급
     const fetchToken = async () => {
       try {
         const permission = await Notification.requestPermission();
         if (permission !== "granted") return;
-        const currentToken = await getToken(messaging, {vapidKey: VAPID_KEY});
+        const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
         if (currentToken) {
           setFcmToken(currentToken);
           await sendTokenToServer(currentToken);
@@ -58,16 +58,10 @@ const App = () => {
 
     const currentSeenIds = seenIdsRef.current;
 
-    // 2) 포그라운드 메시지 수신 (중복 제거)
     const handleForeground = (payload: any) => {
-      // item_id 로 중복 처리
       const itemId = payload.data?.item_id;
-      if (itemId && currentSeenIds.has(itemId)) {
-        return; // 이미 알림 보냄
-      }
-      if (itemId) {
-        currentSeenIds.add(itemId);
-      }
+      if (itemId && currentSeenIds.has(itemId)) return;
+      if (itemId) currentSeenIds.add(itemId);
       const { title = "", body = "" } = payload.notification ?? {};
       toast(`${title}: ${body}`);
     };
@@ -76,17 +70,22 @@ const App = () => {
 
     return () => {
       unsubscribeOnMessage();
-      // 컴포넌트 언마운트 시 중복 기록 리셋
       currentSeenIds.clear();
     };
   }, [user]);
 
+  return null; // UI는 필요없음
+};
+
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AuthProvider>
           <InventoryProvider>
             <RecipeProvider>
+              {/* ✅ AuthProvider 하위에서만 FCMHandler 렌더 */}
+              <FCMHandler />
               <Sonner position="top-center" closeButton toastOptions={{ duration: 5000 }} />
 
               <BrowserRouter>
