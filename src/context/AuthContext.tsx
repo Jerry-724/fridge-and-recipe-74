@@ -1,3 +1,4 @@
+// src/context/AuthContext.tsx
 import React, {
   createContext,
   useState,
@@ -33,21 +34,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // 1) Axios 인스턴스 생성 및 토큰 자동 헤더 삽입
   const apiClient = useMemo(() => {
+// HEAD
     const client = axios.create({
       baseURL: import.meta.env.VITE_API_URL,
     });
     client.interceptors.request.use((config) => {
-      if (token) {
-        // headers 가 undefined 라면 빈 객체로 초기화
-        (config.headers as Record<string,string>) = config.headers as Record<string,string> || {};
+      const token = localStorage.getItem('token');
+      if (token && config.headers) {
         (config.headers as Record<string,string>)['Authorization'] = `Bearer ${token}`;
         // ngrok 경고 우회 헤더 추가
         (config.headers as Record<string, string>)['ngrok-skip-browser-warning'] = 'true';
       }
       return config;
-    });
-    return client;
-  }, [token]);
+    },
+    (error) => Promise.reject(error)
+  );
+  return client;
+}, [token]);
+
 
   // 2) 초기 로컬스토리지에서 토큰·유저 로드
   useEffect(() => {

@@ -1,21 +1,36 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDHpT8yrU63XHjUOKc1rAeh1SjsF5XSOeQ",
-  authDomain: "what-to-eat-c0751.firebaseapp.com",
-  projectId: "what-to-eat-c0751",
-  storageBucket: "what-to-eat-c0751.firebasestorage.app",
-  messagingSenderId: "810673032559",
-  appId: "1:810673032559:web:209ad8ce77059d20c06c9a",
-  measurementId: "G-RJRFJT6E7B"
-};
+importScripts('https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.1/firebase-messaging-compat.js');
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+firebase.initializeApp({
+    apiKey: "AIzaSyANPWKSLfOToDoaLQbGCGlikkZUolMKzl4",
+    authDomain: "what-to-eat-41dcc.firebaseapp.com",
+    projectId: "what-to-eat-41dcc",
+    storageBucket: "what-to-eat-41dcc.firebasestorage.app",
+    messagingSenderId: "782329607823",
+    appId: "1:782329607823:web:d2641a523a16a62b4922fa",
+    measurementId: "G-BTE1R2R416"
+  });
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '/vite.svg',
+  };
+  
+  // Frontend에 메시지 전달 - 앱 내부에서 메세지를 확인하고 싶은 경우.
+  self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clients) {
+    clients.forEach(function(client) {
+      client.postMessage({
+        messageType: 'push-received',
+        notification: payload.notification,
+      });
+    });
+  });
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
