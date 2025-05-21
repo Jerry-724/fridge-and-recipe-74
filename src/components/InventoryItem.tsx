@@ -23,13 +23,15 @@ const getFoodEmoji = (itemName: string): string => {
     '아이스크림': '🍦', '케이크': '🍰', '쿠키': '🍪',
     '초콜릿': '🍫', '커피': '☕', '주스': '🧃',
   };
-  
+
+  // 정규식 기반 자동 매핑
   for (const [key, emoji] of Object.entries(emojiMap)) {
-    if (itemName.includes(key)) {
+    const regex = new RegExp(key, "i");
+    if (regex.test(itemName)) {
       return emoji;
     }
   }
-  
+
   return '🍽️';
 };
 
