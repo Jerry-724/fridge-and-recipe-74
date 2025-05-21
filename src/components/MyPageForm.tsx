@@ -26,19 +26,20 @@ const MyPageForm: React.FC = () => {
 
   const { user, updateUser, deleteAccount, logout } = useAuth();
   // notification 상태를 user에서 받아오고 항상 동기화
-  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(!!user?.notification);
-
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(
+      user?.notification ?? true  // undefined/null이면 true로 간주
+  );
   // user.notification 값이 바뀌면 알림 토글 상태도 동기화
   useEffect(() => {
-    setNotificationsEnabled(!!user?.notification);
-  }, [user?.notification]);
+  setNotificationsEnabled(user?.notification ?? true);
+}, [user?.notification]);
 
   // 알림 설정 토글 핸들러 (PATCH + 동기화)
   const handleToggleNotifications = async (enabled: boolean) => {
     setNotificationsEnabled(enabled);
     try {
-      await axios.patch(
-        `http://localhost:8000/user/me/notification`,
+      await api.patch(
+        `/user/me/notification`,
         null,
         {
           params: { enabled },
@@ -46,7 +47,7 @@ const MyPageForm: React.FC = () => {
         }
       );
       // PATCH 후 반드시 최신 user 객체 fetch & 상태 동기화
-      const updatedUserData = await axios.get(`http://localhost:8000/mypage/${user!.user_id}`, {
+      const updatedUserData = await api.get(`/mypage/${user!.user_id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
       localStorage.setItem("user", JSON.stringify(updatedUserData.data));
