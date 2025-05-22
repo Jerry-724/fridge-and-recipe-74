@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from "./AuthContext";
 
 interface Message {
   id: number;
@@ -39,9 +40,11 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const userId = localStorage.getItem("user_id");
 
 export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  const userId = user?.user_id;
+  
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: '안녕하세요! 오늘은 어떤 요리를 도와드릴까요?', isUser: false }
   ]);
@@ -49,6 +52,18 @@ export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { user_id } = useParams<{ user_id: string }>();
   
   const sendMessage = async (messageText: string) => {
+
+    console.log("🔍 user_request:", messageText);
+    console.log(userId)
+
+    if (!userId) {
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        text: "로그인이 필요합니다. 먼저 로그인해주세요.",
+        isUser: false,
+      }]);
+      return;
+    }
     try {
       setIsLoading(true);
       
@@ -61,10 +76,10 @@ export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       
       setMessages(prev => [...prev, userMessage]);
       
-      console.log("🔍 user_request:", messageText);
+   
       
       // 백엔드 API 호출
-      const response = await api.get(`/qa/${user_id}/recommend-recipes`, {
+      const response = await api.get(`/qa/${userId}/recommend-recipes`, {
         params: { user_request: messageText }
       });
       
