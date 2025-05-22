@@ -48,7 +48,12 @@ const FCMHandler = () => {
         const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
         if (currentToken) {
           setFcmToken(currentToken);
+
+          const storedToken = localStorage.getItem("fcm_token");
+          if (storedToken === currentToken) return;
+
           await sendTokenToServer(currentToken);
+          localStorage.setItem("fcm_token", currentToken);
         }
       } catch (err) {
         console.error("FCM token error:", err);
