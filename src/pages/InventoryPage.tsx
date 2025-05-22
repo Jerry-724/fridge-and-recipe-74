@@ -50,9 +50,11 @@ const InventoryPage: React.FC = () => {
       {isSelectionMode && selectedItems.length > 0 && (
         <div
           className="absolute bottom-24 left-0 right-0 flex justify-center z-20"
-          onClick={() => setShowDeleteConfirmation(true)}
         >
-          <button className="bg-destructive text-white py-2 px-6 rounded-full flex items-center">
+          <button
+            className="bg-destructive text-white py-2 px-6 rounded-full flex items-center"
+            onClick={() => setShowDeleteConfirmation(true)}
+          >
             <Trash2Icon size={18} className="mr-1" />
             <span className="font-bold">{selectedItems.length}개 삭제</span>
           </button>
