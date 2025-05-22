@@ -1,44 +1,46 @@
 // src/components/InventoryItem.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Item } from '../types/api';
 import { useInventory } from '../context/InventoryContext';
 import { Checkbox } from '@/components/ui/checkbox';
+import { extractMainEmoji } from '@/lib/emojiUtils';
 
 interface InventoryItemProps {
   item: Item;
 }
 
-// Mapping for food emoji based on item name
-const getFoodEmoji = (itemName: string): string => {
-  const emojiMap: Record<string, string> = {
-    '소고기': '🥩', '돼지고기': '🥓', '닭고기': '🍗',
-    '생선': '🐟', '새우': '🦐', '오징어': '🦑',
-    '우유': '🥛', '치즈': '🧀', '버터': '🧈',
-    '당근': '🥕', '감자': '🥔', '양파': '🧅',
-    '토마토': '🍅', '오이': '🥒', '브로콜리': '🥦',
-    '사과': '🍎', '바나나': '🍌', '딸기': '🍓',
-    '포도': '🍇', '오렌지': '🍊', '복숭아': '🍑',
-    '쌀': '🍚', '파스타': '🍝', '빵': '🍞',
-    '계란': '🥚', '김치': '🥬', '소스': '🧂',
-    '아이스크림': '🍦', '케이크': '🍰', '쿠키': '🍪',
-    '초콜릿': '🍫', '커피': '☕', '주스': '🧃',
-  };
-  
-  for (const [key, emoji] of Object.entries(emojiMap)) {
-    if (itemName.includes(key)) {
-      return emoji;
-    }
-  }
-  
-  return '🍽️';
-};
-
 const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
   const { isSelectionMode, selectedItems, selectItem, deselectItem } = useInventory();
+  const [emoji, setEmoji] = useState('🍽️');
   const hasExpiry = item.daysLeft != null;
   const isExpiringSoon = hasExpiry && item.daysLeft! > 0 && item.daysLeft! <= 3;
   const isExpired = hasExpiry && item.daysLeft! <= 0;
   const isSelected = selectedItems.includes(item.item_id);
+
+  // LLM 기반 이모지 추출 로직
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchEmoji = async () => {
+      try {
+        const result = await extractMainEmoji(item.item_name);
+        if (isMounted && result) {
+          setEmoji(result);
+        }
+      } catch (error) {
+        console.error('이모지 추출 실패:', error);
+        if (isMounted) {
+          setEmoji('🍽️'); // 실패 시 기본 이모지
+        }
+      }
+    };
+
+    fetchEmoji();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [item.item_name]);
 
   const handleClick = () => {
     if (isSelectionMode) {
@@ -48,15 +50,16 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
 
   return (
     <div
-      className={`relative flex flex-col items-center p-3 border-2 rounded-lg
-        ${isExpiringSoon ? 'border-destructive' : 'border-primary'}`}
+      className={`relative flex flex-col items-center p-3 border-2 rounded-lg cursor-pointer transition-colors
+        ${isExpiringSoon ? 'border-destructive' : 'border-primary'}
+        ${isSelected ? 'bg-accent/50' : 'bg-background'}`}
       onClick={handleClick}
     >
       {isSelectionMode && (
         <div className="absolute top-1 right-1 z-10">
           <Checkbox
             checked={isSelected}
-            className="h-5 w-5"
+            className="h-5 w-5 bg-background"
             onCheckedChange={(checked) =>
               checked ? selectItem(item.item_id) : deselectItem(item.item_id)
             }
@@ -64,11 +67,11 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item }) => {
         </div>
       )}
 
-      <div className="text-3xl mb-2">{getFoodEmoji(item.item_name)}</div>
-      <div className="text-sm font-bold">{item.item_name}</div>
+      <div className="text-3xl mb-2">{emoji}</div>
+      <div className="text-sm font-bold text-center">{item.item_name}</div>
       <div
         className={`text-xs mt-1 ${
-          isExpiringSoon || isExpired ? 'text-destructive' : 'text-gray-500'
+          isExpiringSoon || isExpired ? 'text-destructive' : 'text-muted-foreground'
         }`}
       >
         {hasExpiry
