@@ -38,7 +38,7 @@ export const extractMainEmoji = async (itemName: string): Promise<string> => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4.1',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 5,
         temperature: 0
