@@ -34,7 +34,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onClose }) => {
           </button>
           <button
             onClick={handleDelete}
-            className="bg-destructive text-white py-3 px-6 rounded-md font-bold"
+            className="flex-1 bg-destructive text-white py-3 rounded-md font-bold"
           >
             삭제
           </button>
