@@ -17,8 +17,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!login_id.trim() || !password.trim() || !confirmPassword.trim() || !username.trim()) {
-      toast({
+    if (!login_id || !password || !confirmPassword || !username) {
+      alert({
         title: '오류',
         description: '모든 필드를 입력해주세요.',
         variant: 'destructive',
@@ -27,7 +27,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
     }
     
     if (password !== confirmPassword) {
-      toast({
+      alert({
         title: '오류',
         description: '비밀번호가 일치하지 않습니다.',
         variant: 'destructive',
