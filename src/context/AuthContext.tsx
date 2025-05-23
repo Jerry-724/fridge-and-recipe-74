@@ -116,7 +116,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (error: any) {
       console.error('Signup failed:', error);
       const detail = error.response?.data?.detail;
-      alert(detail)
+      let message = '';
+
+      if (Array.isArray(detail)) {
+        // 여러 에러가 배열로 올 때 (Pydantic 422)
+        message = detail.map((d) => d.msg).join('\n');
+      } else if (typeof detail === 'string') {
+        // 커스텀 에러 메시지
+        message = detail;
+      } else {
+        message = '알 수 없는 오류가 발생했습니다.';
+      }
+
+    alert(message);
       throw new Error(detail || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
