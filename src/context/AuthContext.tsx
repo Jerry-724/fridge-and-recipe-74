@@ -116,6 +116,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (error: any) {
       console.error('Signup failed:', error);
       const detail = error.response?.data?.detail;
+      alert(detail)
       throw new Error(detail || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
