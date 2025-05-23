@@ -41,6 +41,10 @@ const FCMHandler = () => {
   const seenIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+
+    // user가 없으면(로그아웃 상태) FCM 토큰 로직 실행 중단
+    if (!user) return;
+
     const fetchToken = async () => {
       try {
         const permission = await Notification.requestPermission();
