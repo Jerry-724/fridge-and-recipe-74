@@ -119,8 +119,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let message = '';
 
       if (Array.isArray(detail)) {
-        // 여러 에러가 배열로 올 때 (Pydantic 422)
-        message = detail.map((d) => d.msg).join('\n');
+        message = detail[0]?.msg || '입력값을 확인해주세요.';
       } else if (typeof detail === 'string') {
         // 커스텀 에러 메시지
         message = detail;
