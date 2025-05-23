@@ -128,8 +128,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         message = '알 수 없는 오류가 발생했습니다.';
       }
 
-    alert(message);
-      throw new Error(detail || '회원가입에 실패했습니다.');
+      alert(message);
+      throw new Error(message || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
