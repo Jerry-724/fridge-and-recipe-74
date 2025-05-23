@@ -93,8 +93,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(userObj);
       setIsAuthenticated(true);
     } catch (error) {
-      console.error('Login failed:', error);
-      throw new Error('로그인에 실패했습니다. 다시 시도해주세요.');
+      const detail = error.response?.data?.detail;
+      throw new Error(detail || '로그인에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
     }
