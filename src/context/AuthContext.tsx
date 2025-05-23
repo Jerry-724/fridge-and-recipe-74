@@ -93,10 +93,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setToken(data.access_token);
       setUser(userObj);
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch (error: any) {
       const detail = error.response?.data?.detail;
-      toast(detail)
-      throw new Error(detail || '로그인에 실패했습니다. 다시 시도해주세요.');
+      let message = ''
+      
+      if (typeof detail === 'string') {
+        message = detail;
+      } else if (Array.isArray(detail)) {
+        message = detail[0]?.msg || '로그인에 실패했습니다.';
+      } else {
+        message = '로그인에 실패했습니다. 다시 시도해주세요.';
+      }
+
+      toast(message, { duration: 2000 }); // 2초간 표시
+      throw new Error(message);
     } finally {
       setIsLoading(false);
     }
