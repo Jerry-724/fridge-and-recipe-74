@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import axios, { AxiosInstance } from 'axios';
 import { User } from '../types/api';
+import { toast } from '@/hooks/use-toast'; // 또는 사용하는 토스트 라이브러리 import
 
 interface AuthContextType {
   apiClient: AxiosInstance;
@@ -94,7 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsAuthenticated(true);
     } catch (error) {
       const detail = error.response?.data?.detail;
-      alert(detail)
+      toast(detail)
       throw new Error(detail || '로그인에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
@@ -127,7 +128,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         message = '알 수 없는 오류가 발생했습니다.';
       }
 
-      alert(message);
+      toast({
+        title: '회원가입 실패',
+        description: message,
+        variant: 'destructive', // 에러 스타일
+      });
       throw new Error(message || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
