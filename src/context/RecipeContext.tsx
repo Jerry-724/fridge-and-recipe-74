@@ -80,7 +80,7 @@ export const RecipeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
    
       
       // 백엔드 API 호출
-      const response = await api.get(`/qa/recommend-recipes`, {
+      const response = await api.get(`/qa/${userId}/recommend-recipes`, {
         params: { user_request: messageText }
       });
       
