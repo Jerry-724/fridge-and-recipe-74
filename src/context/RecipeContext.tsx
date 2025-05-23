@@ -26,7 +26,6 @@ const api = axios.create({
     "ngrok-skip-browser-warning": "true",
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
 });
 
 // 요청 인터셉터 - 모든 요청에 토큰 추가
