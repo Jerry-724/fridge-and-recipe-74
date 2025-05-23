@@ -94,6 +94,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsAuthenticated(true);
     } catch (error) {
       const detail = error.response?.data?.detail;
+      alert(detail)
       throw new Error(detail || '로그인에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
