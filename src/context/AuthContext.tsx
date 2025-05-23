@@ -93,10 +93,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setToken(data.access_token);
       setUser(userObj);
       setIsAuthenticated(true);
+      toast('로그인에 성공했습니다.', { duration: 1000 })
     } catch (error: any) {
       const detail = error.response?.data?.detail;
       let message = ''
-      
+
       if (typeof detail === 'string') {
         message = detail;
       } else if (Array.isArray(detail)) {
@@ -105,7 +106,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         message = '로그인에 실패했습니다. 다시 시도해주세요.';
       }
 
-      toast(message, { duration: 2000 }); // 2초간 표시
+      toast(message, { duration: 1000 }); // 2초간 표시
       throw new Error(message);
     } finally {
       setIsLoading(false);
@@ -138,7 +139,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         message = '알 수 없는 오류가 발생했습니다.';
       }
 
-      toast(message);
+      toast(message, { duration: 1000 });
       throw new Error(message || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
