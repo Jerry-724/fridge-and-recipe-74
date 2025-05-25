@@ -9,8 +9,8 @@ interface SignupFormProps {
 
 const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
   const [login_id, setLoginId] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [password1, setPassword] = useState<string>('');
+  const [password2, setConfirmPassword] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const { signup, isLoading } = useAuth();
   
@@ -18,7 +18,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
     e.preventDefault();
 
     try {
-      await signup(login_id, password, confirmPassword, username);
+      await signup(login_id, password1, password2, username);
       toast({
         title: '회원가입 되었습니다',
         duration: 1000,
@@ -56,7 +56,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
               type="password"
               className="input-field"
               placeholder="비밀번호"
-              value={password}
+              value={password1}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
             />
@@ -67,7 +67,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
               type="password"
               className="input-field"
               placeholder="비밀번호 확인"
-              value={confirmPassword}
+              value={password2}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
             />

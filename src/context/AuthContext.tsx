@@ -117,10 +117,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     try {
       const response = await apiClient.post('/user/create', {
-        login_id,
-        username,
-        password: password1,
-        confirmPassword: password2,
+        login_id: login_id,
+        username: username,
+        password1: password1,
+        password2: password2,
       });
       if (response.status !== 204) {
         throw new Error('회원가입 요청이 실패했습니다.');
