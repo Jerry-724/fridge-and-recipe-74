@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import axios, { AxiosInstance } from 'axios';
 import { User } from '../types/api';
-import { toast } from 'sonner'; // 또는 사용하는 토스트 라이브러리 import
+import { toast } from "@/components/ui/sonner"; // 또는 사용하는 토스트 라이브러리 import
 
 interface AuthContextType {
   apiClient: AxiosInstance;

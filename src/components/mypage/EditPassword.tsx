@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 interface EditPasswordProps {
   onCancel: () => void;
