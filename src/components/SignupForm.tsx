@@ -18,7 +18,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onToggleLogin }) => {
     e.preventDefault();
 
     try {
-      await signup(login_id, password, username);
+      await signup(login_id, password, confirmPassword, username);
       toast({
         title: '회원가입 되었습니다',
         duration: 1000,

@@ -19,7 +19,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (login_id: string, password: string) => Promise<void>;
-  signup: (login_id: string, password: string, username: string) => Promise<void>;
+  signup: (login_id: string, password1: string, password2: string, username: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: Partial<User>) => Promise<void>;
   deleteAccount: (password: string) => Promise<void>;
@@ -113,14 +113,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const signup = async (login_id: string, password: string, username: string) => {
+  const signup = async (login_id: string, password1: string, password2: string, username: string) => {
     setIsLoading(true);
     try {
       const response = await apiClient.post('/user/create', {
         login_id,
         username,
-        password: password,
-        confirmPassword: password,
+        password: password1,
+        confirmPassword: password2,
       });
       if (response.status !== 204) {
         throw new Error('회원가입 요청이 실패했습니다.');
