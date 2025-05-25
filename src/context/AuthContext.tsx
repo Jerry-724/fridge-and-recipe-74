@@ -169,8 +169,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('User update failed:', error);
+      const detail = error.response?.data?.detail;
+      let message = '';
+
+      if (Array.isArray(detail)) {
+        message = detail[0]?.msg || '입력값을 확인해주세요.';
+      } else if (typeof detail === 'string') {
+        // 커스텀 에러 메시지
+        message = detail;
+      } else {
+        message = '알 수 없는 오류가 발생했습니다.';
+      }
+
+      toast(message, { duration: 1000 });
       throw new Error('사용자 정보 업데이트에 실패했습니다.');
     } finally {
       setIsLoading(false);

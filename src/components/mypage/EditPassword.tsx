@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { toast } from "sonner";
+
 interface EditPasswordProps {
   onCancel: () => void;
   onSubmit: (currentPassword: string, newPassword: string, confirmPassword: string) => Promise<void>;
@@ -41,8 +43,25 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onCancel, onSubmit, loading
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+  try {
     await onSubmit(values.currentPassword, values.newPassword, values.confirmPassword);
-  };
+    toast('비밀번호가 성공적으로 변경되었습니다.', { duration: 1000 });
+  } catch (error: any) {
+    let message = '비밀번호 변경에 실패했습니다.';
+    // Axios 에러 응답에서 detail 추출
+    const detail = error?.response?.data?.detail;
+
+    if (typeof detail === 'string') {
+      message = detail;
+    } else if (Array.isArray(detail)) {
+      message = detail[0]?.msg || message;
+    } else if (error instanceof Error && error.message) {
+      message = error.message;
+    }
+
+    toast(message, { duration: 1000 });
+  }
+};
 
   return (
     <FormContainer>
